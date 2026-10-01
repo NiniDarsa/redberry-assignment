@@ -1,4 +1,5 @@
 import HeroSection from "./components/HeroSection"
+import NowPlayingSection from "./components/NowPlaying"
 
 
 function App() {
@@ -8,6 +9,7 @@ function App() {
     <>
   
       <HeroSection/>
+      <NowPlayingSection/>
   
     </>
   )

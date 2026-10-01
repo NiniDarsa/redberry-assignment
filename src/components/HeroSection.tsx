@@ -132,7 +132,7 @@ const HeroSection = () => {
                 return response.json();
             })
             .then((data) => {
-                console.log(data);
+                // console.log(data);
                 setDetails(data.data);
             })
             .catch((error) => {
