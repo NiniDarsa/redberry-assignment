@@ -5,12 +5,115 @@ const FiltersPanel = () => {
 
     const [filterOptions] = useFilterOptions()
 
-    const[venue,setVenue]=useState("")
-    const[date, setDate]=useState("")
-    const [format, setFormat]=useState("")
-    const [language, setLanguage]=useState("")
-    const [timeOfDay, setTimeOfDay]=useState("")
 
+    const today = new Date().getDate()
+    const [venue, setVenue] = useState<string[]>([])
+    const [datePeriod, setDatePeriod] = useState<number>(today)
+    const [format, setFormat] = useState<string[]>([])
+    const [language, setLanguage] = useState<string[]>([])
+    const [timeOfDay, setTimeOfDay] = useState<string[]>([])
+
+
+
+    //formats for each venue
+
+    function getAvailableFormats() {
+        const arr = filterOptions?.venues.map((item) => (
+            {
+                [item.name]: item.formats.map((item) => item.slug)
+            }
+        ))
+
+        const availableFormats: string[] = [];
+
+        if (venue.length === 0) {
+            availableFormats.push(
+                ...(filterOptions?.formats.map((item) => item.slug) ?? [])
+            );
+        } else {
+            arr?.forEach((item) => {
+                const venueName = Object.keys(item)[0];
+
+                if (venue.includes(venueName)) {
+                    const formats = Object.values(item)[0];
+
+                    formats.forEach((format) => {
+                        if (!availableFormats.includes(format)) {
+                            availableFormats.push(format);
+                        }
+                    });
+                }
+            });
+        }
+        return availableFormats
+    }
+
+    const availableFormats=getAvailableFormats()
+
+
+    function filterCounter() {
+        const array = [venue.length > 0, format.length > 0, language.length > 0, timeOfDay.length > 0, !!datePeriod]
+        const filteredArray = array.filter((item) => item !== false)
+        return filteredArray.length
+
+    }
+
+
+    function handlevVenueChange(name: string) {
+        if (venue.includes(name)) {
+            const newVenue = [...venue].filter((item) => item !== name)
+            return setVenue(newVenue)
+
+        } else {
+            return setVenue([...venue, name])
+        }
+
+    }
+
+    function handleDateChange(date: number) {
+        setDatePeriod(date)
+    }
+
+    function handleFormatChange(name: string) {
+        if (format.includes(name)) {
+            const newFormat = [...format].filter((item) => item !== name)
+            return setFormat(newFormat)
+
+        } else {
+            return setFormat([...format, name])
+        }
+    }
+
+    function handleLanguageChange(name: string) {
+        if (language.includes(name)) {
+            const newLanguage = [...language].filter((item) => item !== name)
+            return setLanguage(newLanguage)
+
+        } else {
+            return setLanguage([...language, name])
+        }
+    }
+
+    function handleTimeOfDayChange(name: string) {
+        if (timeOfDay.includes(name)) {
+            const newTimeOfDay = [...timeOfDay].filter((item) => item !== name)
+            return setTimeOfDay(newTimeOfDay)
+
+        } else {
+            return setTimeOfDay([...timeOfDay, name])
+        }
+    }
+
+    function handleClick() {
+        setVenue([])
+        setFormat([])
+        setLanguage([])
+        setTimeOfDay([])
+        setDatePeriod(today)
+
+    }
+
+    console.log(timeOfDay)
     return (<div className="flex flex-col text-white gap-4" >
         <div className="mb-2">
             <h2 className="font-extrabold">Sessions</h2>
@@ -32,8 +135,8 @@ const FiltersPanel = () => {
                                     type="checkbox"
                                     className="appearance-none w-5 h-5 border border-[#A9A9A9] rounded-sm bg-transparent checked:bg-[#A9A9A9]"
 
-                                // value={inputs.firstname}
-                                // onChange={handleChange}
+                                    checked={venue.includes(item?.name)}
+                                    onChange={() => handlevVenueChange(item.name)}
                                 />
                                 <div>
                                     <span>{item.name} .</span> <span className="text-[#A9A9A9] font-normal text-[12px]">{item.city}</span>
@@ -52,6 +155,7 @@ const FiltersPanel = () => {
                             const date = new Date();
                             date.setDate(date.getDate() + index);
 
+
                             return (
                                 <label
                                     key={date.toISOString()}
@@ -61,7 +165,8 @@ const FiltersPanel = () => {
                                         type="radio"
                                         name="date"
                                         className="peer hidden"
-                                        defaultChecked={index === 0}
+                                        checked={datePeriod === date.getDate()}
+                                        onChange={() => handleDateChange(date.getDate())}
                                     />
 
                                     <div className="flex flex-col items-center rounded-xl px-4 py-2 bg-[#2A2D3C] text-white peer-checked:bg-[#A9A9A9] peer-checked:text-black">
@@ -80,25 +185,26 @@ const FiltersPanel = () => {
                 </div>
 
 
-
                 <div className="border-b border-[#2A2D3C] pb-5">
                     <h4 className="text-[#A9A9A9] pb-2">FORMAT</h4>
                     <>
+                        {filterOptions?.formats
+                            .filter((item) => availableFormats.includes(item.slug))
+                            .map((item) => (
+                                <label key={item.id} className="flex gap-3">
+                                    <input
+                                        type="checkbox"
+                                        className="appearance-none w-5 h-5 border border-[#A9A9A9] rounded-sm bg-transparent checked:bg-[#A9A9A9]"
+                                        checked={format.includes(item.slug)}
+                                        onChange={() => handleFormatChange(item.slug)}
+                                    />
 
-                        {filterOptions?.formats.map((item) => {
-                            return (<label key={item.id} className="flex gap-3">
-                                <input
-                                    type="checkbox"
-                                    className="appearance-none w-5 h-5 border border-[#A9A9A9] rounded-sm bg-transparent checked:bg-[#A9A9A9]"
-
-                                // value={inputs.firstname}
-                                // onChange={handleChange}
-                                />
-                                <div>{item.name}</div>
-                            </label>)
-                        })}
+                                    <div>{item.name}</div>
+                                </label>
+                            ))}
                     </>
                 </div>
+
 
                 <div className="border-b border-[#2A2D3C] pb-5">
                     <h4 className="text-[#A9A9A9] pb-2">LANGUAGE</h4>
@@ -110,8 +216,8 @@ const FiltersPanel = () => {
                                     type="checkbox"
                                     className="appearance-none w-5 h-5 border border-[#A9A9A9] rounded-sm bg-transparent checked:bg-[#A9A9A9]"
 
-                                // value={inputs.firstname}
-                                // onChange={handleChange}
+                                    checked={language.includes(item.name)}
+                                    onChange={() => handleLanguageChange(item.name)}
                                 />
                                 <div> {item.name}</div>
                             </label>)
@@ -130,8 +236,8 @@ const FiltersPanel = () => {
                                 <input
                                     type="checkbox"
                                     className="appearance-none w-5 h-5 border border-[#A9A9A9] rounded-sm bg-transparent checked:bg-[#A9A9A9]"
-                                // value={inputs.firstname}
-                                // onChange={handleChange}
+                                    checked={timeOfDay.includes(item.id)}
+                                    onChange={() => handleTimeOfDayChange(item.id)}
                                 />
                                 <div>{item.id} . <span className="text-[#A9A9A9] font-normal text-[12px]">{item.label}</span></div>
                             </label>)
@@ -142,7 +248,16 @@ const FiltersPanel = () => {
 
             </div>
 
-            <div className="text-[#A9A9A9] text-center pt-10 font-normal "><span>0</span> filters active</div>
+            <div className="flex flex-col justify-between items-center gap-2">
+                <div className="text-[#A9A9A9] text-center pt-10 font-normal ">
+                    <span>
+                        {filterCounter()}
+                    </span> filters active
+                </div>
+                <button
+                    onClick={() => handleClick()}
+                    className="bg-[#2A2D3C] p-2 rounded-sm font-semibold cursor-pointer ">Clear all</button>
+            </div>
         </div>
 
     </div>)
