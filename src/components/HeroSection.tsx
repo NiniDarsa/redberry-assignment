@@ -1,149 +1,26 @@
 
 import { useEffect, useState } from "react"
 import Navigation from "./Navigation";
+import { useDetailedMovieInfo } from "../hooks/useDetailedMovieInfo";
+import { useHeroSectionMovieInfo } from "../hooks/useHeroSectionMovieInfo";
 
-type TMovie = {
-    ageRating: {
-        code: string;
-        minAge: number;
-        description: string;
-    };
 
-    backdropUrl: string;
-
-    formats: {
-        id: number;
-        slug: string;
-        name: string;
-        priceUplift: number;
-    }[];
-
-    fromPrice: number;
-
-    genres: {
-        id: number;
-        slug: string;
-        name: string;
-    }[];
-
-    id: number;
-    isComingSoon: boolean;
-    isFeatured: boolean;
-    isNotified: boolean;
-    kind: string;
-    posterUrl: string;
-    releaseDate: string;
-    runtimeMinutes: number;
-    slug: string;
-    title: string;
-};
-
-type TAgeRating = {
-    code: string;
-    minAge: number;
-    description: string;
-};
-
-type TFormat = {
-    id: number;
-    slug: string;
-    name: string;
-    priceUplift: number;
-};
-
-type TGenre = {
-    id: number;
-    slug: string;
-    name: string;
-};
-
-type TMovieDetails = {
-    ageRating: TAgeRating;
-    availableDates: string[];
-
-    backdropUrl: string;
-    cast: string;
-    director: string;
-
-    formats: TFormat[];
-
-    fromPrice: number;
-
-    genres: TGenre[];
-
-    id: number;
-    isComingSoon: boolean;
-    isFeatured: boolean;
-    isNotified: boolean;
-
-    kind: string;
-
-    posterUrl: string;
-
-    releaseDate: string;
-    runtimeMinutes: number;
-
-    slug: string;
-    synopsis: string;
-    title: string;
-};
 
 const HeroSection = () => {
 
-    const [FeaturedMovies, setFeaturedMovies] = useState<TMovie[]>([])
+    const [FeaturedMovies] = useHeroSectionMovieInfo()
     const [currentMovie, setCurrentMovie] = useState(0)
-
-    const [details, setDetails] = useState<TMovieDetails | null>(null)
-
-    // const [previousMovie, setPreviousMovie] = useState<TMovie | null>(null)
-
-    useEffect(() => {
-        fetch("https://api.kinoxii.redberryinternship.ge/api/movies/featured")
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error: ${response.status}`);
-                }
-
-                return response.json();
-            })
-            .then((data) => {
-                // console.log(data);
-                setFeaturedMovies(data.data);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }, []);
 
     const movie = FeaturedMovies[currentMovie]
 
 
     //fetched Detailed information about each movie
 
-    useEffect(() => {
-        if (!movie) return
-
-        fetch(`https://api.kinoxii.redberryinternship.ge/api/movies/${movie?.slug}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error: ${response.status}`);
-                }
-
-                return response.json();
-            })
-            .then((data) => {
-                console.log(data);
-                setDetails(data.data);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }, [movie]);
-
-
+    const [details] = useDetailedMovieInfo(movie?.slug)
 
 
     //backward and forward buttons
+
     function buttonForward() {
 
         // setPreviousMovie(movie)
@@ -165,7 +42,6 @@ const HeroSection = () => {
         }
     }
 
-
     //Automatic change
     useEffect(() => {
         const id = setInterval(() => {
@@ -185,16 +61,9 @@ const HeroSection = () => {
 
 
 
-
-
     if (!movie) { return null }
 
     return (<section className=" relative min-h-[760px] h-[80vh] flex flex-col items-start justify-around py-10 overflow-hidden">
-        {/* <div
-        key={previousMovie?.id}
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${previousMovie?.backdropUrl})` }}
-        /> */}
 
         <Navigation />
 
@@ -214,7 +83,7 @@ const HeroSection = () => {
             <ul className="w-3/6 gap-0.5 whitespace-nowrap flex justify-between  text-[12px] mb-3.75 font-semibold ">
                 <li className="rounded-full px-3 py-1.5 text-[#EC3013] bg-[#EC30131A] text-[12px]">{movie.ageRating.code}</li>
                 <li className="bg-[#FFFFFF]/10 rounded-full px-3 py-1.5 text-[12px] flex items-center gap-0.5"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5.3125 7.0625L7.5 4.875M4 0.5H6.625M10.125 7.0625C10.125 9.72037 7.97037 11.875 5.3125 11.875C2.65463 11.875 0.5 9.72037 0.5 7.0625C0.5 4.40463 2.65463 2.25 5.3125 2.25C7.97037 2.25 10.125 4.40463 10.125 7.0625Z" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M5.3125 7.0625L7.5 4.875M4 0.5H6.625M10.125 7.0625C10.125 9.72037 7.97037 11.875 5.3125 11.875C2.65463 11.875 0.5 9.72037 0.5 7.0625C0.5 4.40463 2.65463 2.25 5.3125 2.25C7.97037 2.25 10.125 4.40463 10.125 7.0625Z" stroke="white" stroke-Linecap="round" stroke-linejoin="round" />
                 </svg>
                     {movie.runtimeMinutes} min</li>
                 <li className="bg-[#FFFFFF]/10 rounded-full px-3 py-1.5 text-[12px] ">{movie.formats?.[0]?.name}</li>
@@ -233,14 +102,20 @@ const HeroSection = () => {
 
         </div>
 
-        <div className="relative w-100vw gap-2 flex items-center ml-auto mr-auto">
+        <div className="relative w-100vw gap-1 flex items-center ml-auto mr-auto">
             <div className={`${currentMovie === 0 ? "bg-[#EC3013]" : "bg-white"} w-[20vw] h-0.5 rounded-full`}></div>
             <div className={`${currentMovie === 1 ? "bg-[#EC3013]" : "bg-white"} w-[20vw] h-0.5 rounded-full`}></div>
             <div className={`${currentMovie === 2 ? "bg-[#EC3013]" : "bg-white"} w-[20vw] h-0.5 rounded-full`}></div>
             <div className={`${currentMovie === 3 ? "bg-[#EC3013]" : "bg-white"} w-[20vw] h-0.5 rounded-full`}></div>
             <div className="text-white flex text-[20px] gap-2 cursor-pointer ml-4">
-                <button onClick={() => buttonBackward()} className="bg-[#FFFFFF]/10 w-8.5 h-8.5 rounded-full flex justify-center items-center cursor-pointer">{"<"}</button>
-                <button onClick={() => buttonForward()} className="bg-[#FFFFFF]/10 w-8.5 h-8.5 rounded-full flex justify-center items-center cursor-pointer">{">"}</button>
+                <button onClick={() => buttonBackward()} className="bg-[#FFFFFF]/10 w-13.5 h-13.5 rounded-full flex justify-center items-center cursor-pointer"><svg width="11" height="20" viewBox="0 0 11 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.62493 1.125C9.62493 1.125 1.12502 7.38516 1.125 9.62507C1.12498 11.865 9.625 18.125 9.625 18.125" stroke="white" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                </button>
+                <button onClick={() => buttonForward()} className="bg-[#FFFFFF]/10 w-13.5 h-13.5 rounded-full flex justify-center items-center cursor-pointer"><svg width="11" height="20" viewBox="0 0 11 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1.12519 1.125C1.12519 1.125 9.6251 7.38516 9.62512 9.62507C9.62514 11.865 1.12512 18.125 1.12512 18.125" stroke="white" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                </button>
             </div>
         </div>
     </section>)
