@@ -16,11 +16,11 @@ const HeroSection = () => {
 
     //fetched Detailed information about each movie
 
-     const [details]=useDetailedMovieInfo(movie?.slug)
+    const [details] = useDetailedMovieInfo(movie?.slug)
 
 
     //backward and forward buttons
-     
+
     function buttonForward() {
 
         // setPreviousMovie(movie)
@@ -102,14 +102,20 @@ const HeroSection = () => {
 
         </div>
 
-        <div className="relative w-100vw gap-2 flex items-center ml-auto mr-auto">
+        <div className="relative w-100vw gap-1 flex items-center ml-auto mr-auto">
             <div className={`${currentMovie === 0 ? "bg-[#EC3013]" : "bg-white"} w-[20vw] h-0.5 rounded-full`}></div>
             <div className={`${currentMovie === 1 ? "bg-[#EC3013]" : "bg-white"} w-[20vw] h-0.5 rounded-full`}></div>
             <div className={`${currentMovie === 2 ? "bg-[#EC3013]" : "bg-white"} w-[20vw] h-0.5 rounded-full`}></div>
             <div className={`${currentMovie === 3 ? "bg-[#EC3013]" : "bg-white"} w-[20vw] h-0.5 rounded-full`}></div>
             <div className="text-white flex text-[20px] gap-2 cursor-pointer ml-4">
-                <button onClick={() => buttonBackward()} className="bg-[#FFFFFF]/10 w-8.5 h-8.5 rounded-full flex justify-center items-center cursor-pointer">{"<"}</button>
-                <button onClick={() => buttonForward()} className="bg-[#FFFFFF]/10 w-8.5 h-8.5 rounded-full flex justify-center items-center cursor-pointer">{">"}</button>
+                <button onClick={() => buttonBackward()} className="bg-[#FFFFFF]/10 w-13.5 h-13.5 rounded-full flex justify-center items-center cursor-pointer"><svg width="11" height="20" viewBox="0 0 11 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.62493 1.125C9.62493 1.125 1.12502 7.38516 1.125 9.62507C1.12498 11.865 9.625 18.125 9.625 18.125" stroke="white" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                </button>
+                <button onClick={() => buttonForward()} className="bg-[#FFFFFF]/10 w-13.5 h-13.5 rounded-full flex justify-center items-center cursor-pointer"><svg width="11" height="20" viewBox="0 0 11 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1.12519 1.125C1.12519 1.125 9.6251 7.38516 9.62512 9.62507C9.62514 11.865 1.12512 18.125 1.12512 18.125" stroke="white" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                </button>
             </div>
         </div>
     </section>)
