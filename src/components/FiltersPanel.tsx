@@ -1,17 +1,16 @@
-import { useState } from "react"
 import { useFilterOptions } from "../hooks/useFilterOptions"
 
-const FiltersPanel = () => {
+const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFormat, language, setLanguage, timeOfDay, setTimeOfDay}) => {
 
     const [filterOptions] = useFilterOptions()
 
 
     const today = new Date().getDate()
-    const [venue, setVenue] = useState<string[]>([])
-    const [datePeriod, setDatePeriod] = useState<number>(today)
-    const [format, setFormat] = useState<string[]>([])
-    const [language, setLanguage] = useState<string[]>([])
-    const [timeOfDay, setTimeOfDay] = useState<string[]>([])
+    // const [venue, setVenue] = useState<string[]>([])
+    // const [datePeriod, setDatePeriod] = useState<number>(today)
+    // const [format, setFormat] = useState<string[]>([])
+    // const [language, setLanguage] = useState<string[]>([])
+    // const [timeOfDay, setTimeOfDay] = useState<string[]>([])
 
 
 
@@ -135,8 +134,8 @@ const FiltersPanel = () => {
                                     type="checkbox"
                                     className="appearance-none w-5 h-5 border border-[#A9A9A9] rounded-sm bg-transparent checked:bg-[#A9A9A9]"
 
-                                    checked={venue.includes(item?.name)}
-                                    onChange={() => handlevVenueChange(item.name)}
+                                    checked={venue.includes(item?.slug)}
+                                    onChange={() => handlevVenueChange(item.slug)}
                                 />
                                 <div>
                                     <span>{item.name} .</span> <span className="text-[#A9A9A9] font-normal text-[12px]">{item.city}</span>
@@ -216,8 +215,8 @@ const FiltersPanel = () => {
                                     type="checkbox"
                                     className="appearance-none w-5 h-5 border border-[#A9A9A9] rounded-sm bg-transparent checked:bg-[#A9A9A9]"
 
-                                    checked={language.includes(item.name)}
-                                    onChange={() => handleLanguageChange(item.name)}
+                                    checked={language.includes(item.slug)}
+                                    onChange={() => handleLanguageChange(item.slug)}
                                 />
                                 <div> {item.name}</div>
                             </label>)
