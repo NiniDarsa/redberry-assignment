@@ -1,96 +1,61 @@
-import { useEffect, useState } from "react";
-
-type TMovie = {
-    ageRating: {
-        code: string;
-        minAge: number;
-        description: string;
-    };
-    backdropUrl: string;
-    formats: {
-        id: number;
-        slug: string;
-        name: string;
-        priceUplift: number;
-    }[];
-    fromPrice: number;
-    genres: {
-        id: number;
-        slug: string;
-        name: string;
-    }[];
-    id: number;
-    isComingSoon: boolean;
-    isFeatured: boolean;
-    isNotified: boolean;
-    kind: string;
-    posterUrl: string;
-    releaseDate: string;
-    runtimeMinutes: number;
-    slug: string;
-    title: string;
-};
-
-
-
+import { useState } from "react";
+import { useDetailedMovieInfo } from "../hooks/useDetailedMovieInfo";
+import type { TMovie } from "../types/movies";
+import { useNowPlayingMovieInfo } from "../hooks/useNowPlayingMovieInfo";
 
 
 const NowPlayingSection = () => {
-    const [nowPlayingMovies, setNowPlayingMovies] = useState<TMovie[] | []>([])
-    const [hoveredIndex, setHoveredIndex] = useState(null)
+    const [nowPlayingMovies] = useNowPlayingMovieInfo()
+    const [hoveredTitle, setHoveredTitle] = useState<null | string>(null)
+   
     const SlicedMovies = nowPlayingMovies.slice(0, 6)
 
+  //hover
+    function MouseEnter(e: React.MouseEvent<HTMLElement>, item: TMovie) {
+        setHoveredTitle(item.slug)
+    }
 
+    function MouseLeave() {
+        setHoveredTitle(null)
+    }
 
-    useEffect(() => {
-        fetch("https://api.kinoxii.redberryinternship.ge/api/movies/now-playing")
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error: ${response.status}`);
-                }
-
-                return response.json();
-            })
-            .then((data) => {
-                console.log(data);
-                setNowPlayingMovies(data.data);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }, []);
-
+  
+  //fetched Detailed information about each movie
+    const [details]=useDetailedMovieInfo(hoveredTitle)
 
 
 
     return (<section className="bg-[#070c1c] w-full text-white overflow-hidden pl-15  pt-4">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center mb-2">
             <h2 className="font-extrabold mb-5">NOW PLAYING</h2>
-            <button className="text-[#EC3013] pr-15">see all</button>
+            <button className="text-[#EC3013] pr-15 cursor-pointer">see all</button>
         </div>
 
 
         <div className="relative flex gap-6">
 
             {SlicedMovies.map((item) => {
-                return (<article key={item.id} className="group shrink-0 w-65 flex flex-col bg-[#1E2031] p-3.25  rounded-xl hover:w-[447px]  transition-all duration-300" >
-                    <img src={item.posterUrl} alt={item.title} className="rounded-xl mb-4 w-full h-85 group-hover:h-45 object-cover  transition-all duration-300" />
-                    <div className="flex flex-col gap-2">
+                return (<article
+                    onMouseEnter={(e) => MouseEnter(e, item)}
+                    onMouseLeave={() => MouseLeave()}
+                    key={item.id} className="group shrink-0 w-65 h-[520px] flex flex-col bg-[#1E2031] p-3.25  rounded-xl hover:w-[447px]  transition-[width] duration-500 ease-in-out cursor-pointer" >
+                    <img src={item.posterUrl} alt={item.title} className="rounded-xl mb-4 w-full h-85 group-hover:h-57 object-cover  transition-[height] duration-500" />
+                    <div className="flex flex-col gap-2 transition-transform duration-500 ease-out group-hover:-translate-y-1">
                         <h3 className="font-extrabold">{item.title}</h3>
                         <p className="font-[400] text-[#A9A9A9]">{item.genres[0]?.name} . {item.runtimeMinutes} min</p>
                         <p className="rounded-full px-3 py-1.5 text-[#EC3013] bg-[#EC30131A] text-[12px] w-fit ">{item.ageRating.code}</p>
-                        <p className="hidden group-hover:block text-[#A9A9A9] text-sm">
-                            dajhkdhkldjgfshjkl
+                        <p className=" text-[#A9A9A9] text-sm opacity-0 max-h-0 overflow-hidden translate-y-2 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:max-h-20 group-hover:translate-y-0">
+                            {details?.synopsis}
                         </p>
-                        <div className="flex items-center justify-between gap-2">
+                        
+                    </div>
+                    <div className="mt-auto flex items-center justify-between gap-2">
                             <p className="font-extrabold">from {item.fromPrice}ლ</p>
                             <button className="font-extrabold bg-[#EC3013] px-4 py-1.5 rounded-full cursor-pointer">buy ticket</button>
                         </div>
-                    </div>
                 </article>)
             })}
             <div className="pointer-events-none absolute top-0 right-0 h-full w-[20%] bg-linear-to-r from-transparent to-[#070c1c]" />
-
 
         </div>
     </section>
