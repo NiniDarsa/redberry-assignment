@@ -1,9 +1,32 @@
+import { useEffect } from "react"
+import { getDateString } from "../functions/function"
 import { useFilterOptions } from "../hooks/useFilterOptions"
 
-const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFormat, language, setLanguage, timeOfDay, setTimeOfDay}) => {
+type TFiltersPanel={
+  venue:string[]
+  setVenue: React.Dispatch<React.SetStateAction<string[]>>
+
+  datePeriod: string
+  setDatePeriod: React.Dispatch<React.SetStateAction<string>>
+
+  format: string[]
+  setFormat: React.Dispatch<React.SetStateAction<string[]>>
+
+  language: string[]
+  setLanguage: React.Dispatch<React.SetStateAction<string[]>>
+
+  timeOfDay: string[]
+  setTimeOfDay: React.Dispatch<React.SetStateAction<string[]>>
+
+  sort: string
+  setSort: React.Dispatch<React.SetStateAction<string>>
+  setPage: React.Dispatch<React.SetStateAction<number>>
+}
+
+const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFormat, language, setLanguage, timeOfDay, setTimeOfDay, sort, setSort, setPage}:TFiltersPanel) => {
 
     const [filterOptions] = useFilterOptions()
-
+    console.log(filterOptions)
 
     const today = new Date().getDate()
     // const [venue, setVenue] = useState<string[]>([])
@@ -13,13 +36,10 @@ const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFo
     // const [timeOfDay, setTimeOfDay] = useState<string[]>([])
 
 
-
-    //formats for each venue
-
     function getAvailableFormats() {
         const arr = filterOptions?.venues.map((item) => (
             {
-                [item.name]: item.formats.map((item) => item.slug)
+                [item.slug]: item.formats.map((item) => item.slug)
             }
         ))
 
@@ -31,9 +51,9 @@ const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFo
             );
         } else {
             arr?.forEach((item) => {
-                const venueName = Object.keys(item)[0];
+                const venueSlug = Object.keys(item)[0];
 
-                if (venue.includes(venueName)) {
+                if (venue.includes(venueSlug)) {
                     const formats = Object.values(item)[0];
 
                     formats.forEach((format) => {
@@ -47,7 +67,17 @@ const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFo
         return availableFormats
     }
 
+    //we dont't want format (which is used for checkbutton) to contain things which is not available 
+    //the useEffect keeps format valid when availableFormats changes.
+    //so with that I remove format which is no longer available
+    useEffect(()=>{
+       const availableFormats=getAvailableFormats()
+       setFormat((prev)=>prev.filter((format)=>availableFormats.includes(format)))
+    },[venue,filterOptions])
+
+    //use it for JSX
     const availableFormats=getAvailableFormats()
+   
 
 
     function filterCounter() {
@@ -66,11 +96,13 @@ const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFo
         } else {
             return setVenue([...venue, name])
         }
+        setPage(1)/////////
 
     }
 
-    function handleDateChange(date: number) {
+    function handleDateChange(date: string) {
         setDatePeriod(date)
+        setPage(1) ////////
     }
 
     function handleFormatChange(name: string) {
@@ -81,6 +113,7 @@ const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFo
         } else {
             return setFormat([...format, name])
         }
+        setPage(1)///////
     }
 
     function handleLanguageChange(name: string) {
@@ -91,6 +124,7 @@ const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFo
         } else {
             return setLanguage([...language, name])
         }
+        setPage(1)
     }
 
     function handleTimeOfDayChange(name: string) {
@@ -101,6 +135,7 @@ const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFo
         } else {
             return setTimeOfDay([...timeOfDay, name])
         }
+        setPage(1)
     }
 
     function handleClick() {
@@ -108,8 +143,10 @@ const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFo
         setFormat([])
         setLanguage([])
         setTimeOfDay([])
-        setDatePeriod(today)
-
+        setDatePeriod(getDateString(new Date()))
+        
+        setSort("time_asc") ///
+        setPage(1)///
     }
 
     console.log(timeOfDay)
@@ -154,18 +191,19 @@ const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFo
                             const date = new Date();
                             date.setDate(date.getDate() + index);
 
+                            const dateValue=getDateString(date)
 
                             return (
                                 <label
-                                    key={date.toISOString()}
+                                    key={dateValue}
                                     className="flex-shrink-0 cursor-pointer"
                                 >
                                     <input
                                         type="radio"
                                         name="date"
                                         className="peer hidden"
-                                        checked={datePeriod === date.getDate()}
-                                        onChange={() => handleDateChange(date.getDate())}
+                                        checked={datePeriod === dateValue}
+                                        onChange={() => handleDateChange(dateValue)}
                                     />
 
                                     <div className="flex flex-col items-center rounded-xl px-4 py-2 bg-[#2A2D3C] text-white peer-checked:bg-[#A9A9A9] peer-checked:text-black">

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import type { MovieSessions,  } from "../types/session";
 
-export function useSessionsInfo(){
+export function useSessionsInfo(url:string){
         const [sessions, setSessions] = useState<MovieSessions[]>([])
 
       useEffect(() => {
-            fetch("https://api.kinoxii.redberryinternship.ge/api/sessions")
+            fetch(url)
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error(`HTTP error: ${response.status}`);
@@ -20,6 +20,6 @@ export function useSessionsInfo(){
                 .catch((error) => {
                     console.log(error);
                 });
-        }, []);
+        }, [url]);
         return [sessions]
 }

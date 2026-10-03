@@ -1,30 +1,30 @@
+import { createParams } from "../functions/function"
 import { useSessionsInfo } from "../hooks/useSessionsInfo"
 
-const SessionsPanel = ({venue, datePeriod, format,  language, timeOfDay}) => {
+type SessionsPanelProps = {
+    venue: string[]
+    datePeriod: string
+    format: string[]
+    language: string[]
+    timeOfDay: string[]
 
-    const [sessions] = useSessionsInfo()
-    console.warn(sessions)
-console.error(venue)
+    sort: string
+    page: number
+    setPage: React.Dispatch<React.SetStateAction<number>>
+}
 
-//filtered with venue
-let filtered
-filtered = sessions
-    .map((obj) => ({
-        ...obj,
-        sessions: obj.sessions.filter((session) =>
-            venue.includes(session.venue.slug)
-        )
-    }))
-    .filter((obj) => obj.sessions.length > 0);
+const SessionsPanel = ({ venue, datePeriod, format, language, timeOfDay, sort, page, setPage }: SessionsPanelProps) => {
 
-//filtered with format
+    const params=createParams(venue,datePeriod,format,language,timeOfDay,sort,page)
 
+    const url = `https://api.kinoxii.redberryinternship.ge/api/sessions?${params.toString()}`
 
 
 
-    console.log(filtered)
+    const [sessions] = useSessionsInfo(url)
+    console.error(sessions)
 
-    
+
 
 
     return (<section className="text-white pt-15 w-full min-w-0">
