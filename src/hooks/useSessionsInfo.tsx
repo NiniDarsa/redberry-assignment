@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
-import type { MovieSessions,  } from "../types/session";
+import type { MovieSessions, SessionsMeta,  } from "../types/session";
+
+
 
 export function useSessionsInfo(url:string){
         const [sessions, setSessions] = useState<MovieSessions[]>([])
+        const [meta, setMeta]=useState<SessionsMeta|null>(null)
 
       useEffect(() => {
             fetch(url)
@@ -14,12 +17,14 @@ export function useSessionsInfo(url:string){
                     return response.json();
                 })
                 .then((data) => {
-                    // console.log(data);
+                    console.log(data);
                     setSessions(data.data);
+                    setMeta(data.meta)
                 })
                 .catch((error) => {
                     console.log(error);
                 });
         }, [url]);
-        return [sessions]
+
+        return [sessions, meta] as const
 }

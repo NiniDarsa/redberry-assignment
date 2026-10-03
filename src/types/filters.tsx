@@ -30,7 +30,7 @@ export type TLanguage = {
 
 export type TSort = {
     id: string;
-    name: string;
+    label: string;
 };
 
 export type TTicketType = {

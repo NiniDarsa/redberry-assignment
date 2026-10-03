@@ -72,3 +72,11 @@ export type MovieSessions = {
     movie: MovieData;
     sessions: Session[];
 };
+
+export type SessionsMeta={
+    currentPage:number,
+    date:string,
+    lastPage:number,
+    totalMovies:number,
+    totalSessions:number
+}

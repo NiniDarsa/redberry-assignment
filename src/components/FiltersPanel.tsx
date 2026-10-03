@@ -1,34 +1,37 @@
 import { useEffect } from "react"
 import { getDateString } from "../functions/function"
-import { useFilterOptions } from "../hooks/useFilterOptions"
+import { useSessionFilterOptions } from "../hooks/useSessionFilterOptions"
 
 type TFiltersPanel={
-  venue:string[]
-  setVenue: React.Dispatch<React.SetStateAction<string[]>>
+  
+  venue: string[]
+  setVenue: (values: string[]) => void
 
   datePeriod: string
-  setDatePeriod: React.Dispatch<React.SetStateAction<string>>
+  setDatePeriod: (value: string) => void
 
   format: string[]
-  setFormat: React.Dispatch<React.SetStateAction<string[]>>
+  setFormat: (values: string[]) => void
 
   language: string[]
-  setLanguage: React.Dispatch<React.SetStateAction<string[]>>
+  setLanguage: (values: string[]) => void
 
   timeOfDay: string[]
-  setTimeOfDay: React.Dispatch<React.SetStateAction<string[]>>
+  setTimeOfDay: (values: string[]) => void
 
   sort: string
-  setSort: React.Dispatch<React.SetStateAction<string>>
-  setPage: React.Dispatch<React.SetStateAction<number>>
+
+  setPage: (value: number) => void
+
+  clearAll:()=>void
 }
 
-const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFormat, language, setLanguage, timeOfDay, setTimeOfDay, sort, setSort, setPage}:TFiltersPanel) => {
+const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFormat, language, setLanguage, timeOfDay, setTimeOfDay,  setPage, clearAll}:TFiltersPanel) => {
 
-    const [filterOptions] = useFilterOptions()
-    console.log(filterOptions)
+   const filterOptions = useSessionFilterOptions()
+   console.log(filterOptions)
 
-    const today = new Date().getDate()
+    // const today = new Date().getDate()
     // const [venue, setVenue] = useState<string[]>([])
     // const [datePeriod, setDatePeriod] = useState<number>(today)
     // const [format, setFormat] = useState<string[]>([])
@@ -72,13 +75,20 @@ const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFo
     //so with that I remove format which is no longer available
     useEffect(()=>{
        const availableFormats=getAvailableFormats()
-       setFormat((prev)=>prev.filter((format)=>availableFormats.includes(format)))
-    },[venue,filterOptions])
+       const newFormat=[...format].filter((item)=>availableFormats.includes(item))
+
+        if (
+          newFormat.length !== format.length ||
+          newFormat.some((item, index) => item !== format[index])
+        ) {
+           setFormat(newFormat)
+        }
+    // setFormat((prev)=>prev.filter((format)=>availableFormats.includes(format)))
+    },[venue.join(","),filterOptions])
 
     //use it for JSX
     const availableFormats=getAvailableFormats()
    
-
 
     function filterCounter() {
         const array = [venue.length > 0, format.length > 0, language.length > 0, timeOfDay.length > 0, !!datePeriod]
@@ -96,13 +106,10 @@ const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFo
         } else {
             return setVenue([...venue, name])
         }
-        setPage(1)/////////
-
     }
 
     function handleDateChange(date: string) {
         setDatePeriod(date)
-        setPage(1) ////////
     }
 
     function handleFormatChange(name: string) {
@@ -113,7 +120,6 @@ const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFo
         } else {
             return setFormat([...format, name])
         }
-        setPage(1)///////
     }
 
     function handleLanguageChange(name: string) {
@@ -124,7 +130,7 @@ const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFo
         } else {
             return setLanguage([...language, name])
         }
-        setPage(1)
+      
     }
 
     function handleTimeOfDayChange(name: string) {
@@ -135,21 +141,25 @@ const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFo
         } else {
             return setTimeOfDay([...timeOfDay, name])
         }
-        setPage(1)
+       
     }
+
+    // function handleClick() {
+    //     setVenue([])
+    //     setFormat([])
+    //     setLanguage([])
+    //     setTimeOfDay([])
+    //     setDatePeriod(getDateString(new Date()))
+        
+    //     setSort("time_asc") ///
+    //     setPage(1)///
+    // }
 
     function handleClick() {
-        setVenue([])
-        setFormat([])
-        setLanguage([])
-        setTimeOfDay([])
-        setDatePeriod(getDateString(new Date()))
-        
-        setSort("time_asc") ///
-        setPage(1)///
+       clearAll()
     }
 
-    console.log(timeOfDay)
+
     return (<div className="flex flex-col text-white gap-4" >
         <div className="mb-2">
             <h2 className="font-extrabold">Sessions</h2>

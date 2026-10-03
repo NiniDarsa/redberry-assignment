@@ -1,5 +1,7 @@
 import { createParams } from "../functions/function"
 import { useSessionsInfo } from "../hooks/useSessionsInfo"
+import Pagination from "./Pagination"
+import SortButton from "./SortButton"
 
 type SessionsPanelProps = {
     venue: string[]
@@ -10,27 +12,24 @@ type SessionsPanelProps = {
 
     sort: string
     page: number
-    setPage: React.Dispatch<React.SetStateAction<number>>
+    setPage: (value: number) => void
+    setSort: (value: string) => void
+
 }
 
-const SessionsPanel = ({ venue, datePeriod, format, language, timeOfDay, sort, page, setPage }: SessionsPanelProps) => {
+const SessionsPanel = ({ venue, datePeriod, format, language, timeOfDay, sort, setSort, page, setPage }: SessionsPanelProps) => {
 
-    const params=createParams(venue,datePeriod,format,language,timeOfDay,sort,page)
+    const params = createParams(venue, datePeriod, format, language, timeOfDay, sort,  page) 
 
     const url = `https://api.kinoxii.redberryinternship.ge/api/sessions?${params.toString()}`
 
-
-
-    const [sessions] = useSessionsInfo(url)
-    console.error(sessions)
-
-
-
+    const [sessions, meta] = useSessionsInfo(url)
+   
 
     return (<section className="text-white pt-15 w-full min-w-0">
         <header className="flex justify-between">
-            <p>showing <span>12</span> sessions</p>
-            <button>sort</button>
+            <p>showing <span>{meta?.totalSessions ?? 0}</span> sessions</p>
+            <SortButton setSort={setSort}/>
         </header>
 
 
@@ -81,6 +80,10 @@ const SessionsPanel = ({ venue, datePeriod, format, language, timeOfDay, sort, p
             </article>)
         })}
 
+        {/*pagination */}
+        {
+            meta && <Pagination meta={meta} setPage={setPage}/>
+        }
 
 
     </section>)

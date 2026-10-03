@@ -1,4 +1,4 @@
-//3-->2026-10-3
+//"2026-10-3"
 export const getDateString=(date:Date)=>{
   const year=date.getFullYear()
   const month=String(date.getMonth()+1).padStart(2,"0")
@@ -6,6 +6,7 @@ export const getDateString=(date:Date)=>{
   return `${year}-${month}-${day}`
 }
 
+//Url last part
 export const createParams = (venue:string[],datePeriod:string,format:string[],language:string[],timeOfDay:string[],sort:string,page:number) => {
   const params = new URLSearchParams()
 
@@ -24,7 +25,7 @@ export const createParams = (venue:string[],datePeriod:string,format:string[],la
   })
 
   timeOfDay.forEach((item) => {
-    params.append("timeBands[]", item)
+    params.append("bands[]", item)
   })
 
   params.set("sort", sort)
