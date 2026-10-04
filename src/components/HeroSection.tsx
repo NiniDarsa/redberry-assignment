@@ -1,6 +1,5 @@
 
 import { useEffect, useState } from "react"
-import Navigation from "./Navigation";
 import { useDetailedMovieInfo } from "../hooks/useDetailedMovieInfo";
 import { useHeroSectionMovieInfo } from "../hooks/useHeroSectionMovieInfo";
 
@@ -64,8 +63,6 @@ const HeroSection = () => {
     if (!movie) { return null }
 
     return (<section className=" relative min-h-[760px] h-[80vh] flex flex-col items-start justify-around py-10 overflow-hidden">
-
-        <Navigation />
 
         <div
             key={movie?.title}

@@ -3,6 +3,7 @@ import { useDetailedMovieInfo } from "../hooks/useDetailedMovieInfo";
 import type { TMovie } from "../types/movies";
 import { useNowPlayingMovieInfo } from "../hooks/useNowPlayingMovieInfo";
 import Heading from "./Heading";
+import { useNavigate } from "react-router-dom";
 
 
 const NowPlayingSection = () => {
@@ -24,7 +25,7 @@ const NowPlayingSection = () => {
   //fetched Detailed information about each movie
     const [details]=useDetailedMovieInfo(hoveredTitle)
 
-
+const navigate=useNavigate()
 
     return (<section className="bg-[#070c1c] w-full text-white overflow-hidden pl-15  pt-4 pb-10">
         <Heading title={"NOW PLAYING"}/>
@@ -48,7 +49,9 @@ const NowPlayingSection = () => {
                     </div>
                     <div className="mt-auto flex items-center justify-between gap-2 ">
                             <p className="font-extrabold">from {item.fromPrice}ლ</p>
-                            <button className="font-extrabold bg-[#EC3013] px-4 py-1.5 rounded-full cursor-pointer">buy ticket</button>
+                            <button 
+                            onClick={()=>navigate("/sessions")}
+                            className="font-extrabold bg-[#EC3013] px-4 py-1.5 rounded-full cursor-pointer">buy ticket</button>
                         </div>
                 </article>)
             })}
