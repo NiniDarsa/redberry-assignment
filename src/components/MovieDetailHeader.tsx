@@ -8,14 +8,14 @@ const MovieDetailHeader=({movieDetails}:TDetailHeader)=>{
     <div className="relative h-140 flex justify-start bg-cover bg-center pl-10 pb-10" style={{ backgroundImage: `url(${movieDetails?.posterUrl})` }}>
                   <div className="absolute inset-0 bg-black/50"></div>
                   <div className="relative flex items-end gap-4">
-                      <img className="w-[280px]" src={movieDetails?.posterUrl} alt={movieDetails?.title} />
+                      <img className="w-[280px] rounded-2xl" src={movieDetails?.posterUrl} alt={movieDetails?.title} />
                       <div className="flex flex-col items-start justify-around gap-5 w-140">
                           {/* <p className="rounded-full font-semibold px-3 py-1.5 text-[#EC3013] bg-[#EC30131A]">NOW PLAYING</p> */}
                           <div className="flex">
                               {movieDetails?.genres.map((item) => <p key={item.id} className="rounded-full font-semibold px-3 py-1.5 text-[#EC3013] bg-[#EC30131A]">{item.name}</p>)}
                           </div>
   
-                          <h1 className="font-extrabold">{movieDetails?.title}</h1>
+                          <h1 className="font-extrabold text-white">{movieDetails?.title}</h1>
                           <p className="text-[12px] text-white">{movieDetails?.synopsis}</p>
                           <div className="flex justify-between gap-3">
                               <p className="rounded-full font-semibold px-3 py-1.5 text-[#EC3013] bg-[#EC30131A]">{movieDetails?.ageRating.code}</p>

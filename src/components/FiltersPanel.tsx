@@ -1,7 +1,7 @@
 import { useEffect } from "react"
-import { getDateString } from "../functions/function"
 import { useSessionFilterOptions } from "../hooks/useSessionFilterOptions"
 import useSessionsContext from "../hooks/useSessionsContext"
+import DatePicker from "./DatePicker"
 
 
 
@@ -160,37 +160,7 @@ const FiltersPanel = () => {
                     <h4 className="text-white pb-2">DATE</h4>
 
                     <div className="flex overflow-auto gap-1">
-                        {Array.from({ length: 7 }, (_, index) => {
-                            const date = new Date();
-                            date.setDate(date.getDate() + index);
-
-                            const dateValue=getDateString(date)
-
-                            return (
-                                <label
-                                    key={dateValue}
-                                    className="flex-shrink-0 cursor-pointer"
-                                >
-                                    <input
-                                        type="radio"
-                                        name="date"
-                                        className="peer hidden"
-                                        checked={datePeriod === dateValue}
-                                        onChange={() => handleDateChange(dateValue)}
-                                    />
-
-                                    <div className="flex flex-col items-center rounded-xl px-4 py-2 bg-[#2A2D3C] text-white peer-checked:bg-[#A9A9A9] peer-checked:text-black">
-                                        <span>
-                                            {date.toLocaleDateString("en-US", {
-                                                weekday: "short",
-                                            })}
-                                        </span>
-
-                                        <span>{date.getDate()}</span>
-                                    </div>
-                                </label>
-                            );
-                        })}
+                       <DatePicker datePeriod={datePeriod} handleDateChange={handleDateChange}/>
                     </div>
                 </div>
 

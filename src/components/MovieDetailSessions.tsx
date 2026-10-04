@@ -2,6 +2,7 @@ import { getDateString } from "../functions/function";
 import { useMovieSessions } from "../hooks/useMovieSessions";
 import useSessionsContext from "../hooks/useSessionsContext";
 import type { TMovieDetails } from "../types/movies";
+import DatePicker from "./DatePicker";
 import DetailInfo from "./DetailInfo";
 
 type TMovieDetailSessions={
@@ -25,37 +26,7 @@ const MovieDetailSessions=({name,movieDetails}:TMovieDetailSessions)=>{
                         <h2 className="font-extrabold">Sessions</h2>
                         <p className="text-[#A9A9A9] text-[12px] pb-2">22 sessions over the next seven days</p>
                         <div className="flex gap-2">
-                            {Array.from({ length: 7 }, (_, index) => {
-                                const date = new Date();
-                                date.setDate(date.getDate() + index);
-
-                                const dateValue = getDateString(date)
-
-                                return (
-                                    <label
-                                        key={dateValue}
-                                        className="flex-shrink-0 cursor-pointer"
-                                    >
-                                        <input
-                                            type="radio"
-                                            name="date"
-                                            className="peer hidden"
-                                            checked={datePeriod === dateValue}
-                                            onChange={() => handleDateChange(dateValue)}
-                                        />
-
-                                        <div className="flex flex-col items-center rounded-xl px-4 py-2 bg-[#1E2031] text-white peer-checked:bg-[#A9A9A9] peer-checked:text-black">
-                                            <span>
-                                                {date.toLocaleDateString("en-US", {
-                                                    weekday: "short",
-                                                })}
-                                            </span>
-
-                                            <span>{date.getDate()}</span>
-                                        </div>
-                                    </label>
-                                );
-                            })}
+                           <DatePicker datePeriod={datePeriod} handleDateChange={handleDateChange}/>
                         </div>
                     </>
 
@@ -94,7 +65,7 @@ const MovieDetailSessions=({name,movieDetails}:TMovieDetailSessions)=>{
                                                                     </div>
 
                                                                     {/* DOTTED DIVIDER */}
-                                                                    <div className="w-px h-20 self-center border-l border-dashed border-[#A9A9A9]" />
+                                                                    <div className="w-px h-17 self-center border-l border-dashed border-[#A9A9A9]" />
 
                                                                     {/* RIGHT SIDE */}
                                                                     <div className="relative flex flex-col items-center gap-5 p-4 rounded-r-xl overflow-hidden
@@ -136,7 +107,7 @@ const MovieDetailSessions=({name,movieDetails}:TMovieDetailSessions)=>{
                                                                     </div>
 
                                                                     {/* DOTTED DIVIDER */}
-                                                                    <div className="w-px h-20 self-center border-l border-dashed border-[#A9A9A9]" />
+                                                                    <div className="w-px h-17 self-center border-l border-dashed border-[#A9A9A9]" />
 
                                                                     {/* RIGHT SIDE */}
                                                                     <div className="relative flex flex-col items-center gap-5 p-4 rounded-r-xl overflow-hidden
