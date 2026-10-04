@@ -83,7 +83,7 @@ const FiltersPanel = () => {
     }
 
     function handleDateChange(date: string) {
-        setDatePeriod(date)
+        setDatePeriod(date,true)
     }
 
     function handleFormatChange(name: string) {

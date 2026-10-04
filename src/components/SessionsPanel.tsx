@@ -1,4 +1,5 @@
 // import { createParams } from "../functions/function"
+import { useNavigate } from "react-router-dom"
 import useSessionsContext from "../hooks/useSessionsContext"
 import { useSessionsInfo } from "../hooks/useSessionsInfo"
 import Pagination from "./Pagination"
@@ -14,6 +15,9 @@ const SessionsPanel = () => {
 
     const [sessions, meta] = useSessionsInfo(url)
    
+    const navigate = useNavigate()
+
+console.warn(sessions)
 
     return (<section className="text-white pt-15 w-full min-w-0">
         <header className="flex justify-between">
@@ -34,7 +38,10 @@ const SessionsPanel = () => {
 
                 <div className="flex gap-4 overflow-x-auto min-w-0">
                     {item.sessions.map((item) => {
-                        return (<div className={`cursor-pointer shrink-0 ${item.isSoldOut
+                        return (<div 
+                            onClick={() => navigate(`/movie/${item.movie.slug}`)}
+                            
+                            className={`cursor-pointer shrink-0 ${item.isSoldOut
                             ? "cursor-default"
                             : "cursor-pointer"
                             }`}>
