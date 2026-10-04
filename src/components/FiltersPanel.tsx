@@ -1,42 +1,15 @@
 import { useEffect } from "react"
 import { getDateString } from "../functions/function"
 import { useSessionFilterOptions } from "../hooks/useSessionFilterOptions"
+import useSessionsContext from "../hooks/useSessionsContext"
 
-type TFiltersPanel={
-  
-  venue: string[]
-  setVenue: (values: string[]) => void
 
-  datePeriod: string
-  setDatePeriod: (value: string) => void
 
-  format: string[]
-  setFormat: (values: string[]) => void
-
-  language: string[]
-  setLanguage: (values: string[]) => void
-
-  timeOfDay: string[]
-  setTimeOfDay: (values: string[]) => void
-
-  sort: string
-
-  setPage: (value: number) => void
-
-  clearAll:()=>void
-}
-
-const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFormat, language, setLanguage, timeOfDay, setTimeOfDay,  setPage, clearAll}:TFiltersPanel) => {
+const FiltersPanel = () => {
+    const {  venue,setVenue, datePeriod, setDatePeriod,format, setFormat, language, setLanguage, timeOfDay, setTimeOfDay,  clearAll}=useSessionsContext()
 
    const filterOptions = useSessionFilterOptions()
    console.log(filterOptions)
-
-    // const today = new Date().getDate()
-    // const [venue, setVenue] = useState<string[]>([])
-    // const [datePeriod, setDatePeriod] = useState<number>(today)
-    // const [format, setFormat] = useState<string[]>([])
-    // const [language, setLanguage] = useState<string[]>([])
-    // const [timeOfDay, setTimeOfDay] = useState<string[]>([])
 
 
     function getAvailableFormats() {
@@ -97,7 +70,7 @@ const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFo
 
     }
 
-
+    //functions for filters
     function handlevVenueChange(name: string) {
         if (venue.includes(name)) {
             const newVenue = [...venue].filter((item) => item !== name)
@@ -143,17 +116,6 @@ const FiltersPanel = ({  venue,setVenue, datePeriod, setDatePeriod,format, setFo
         }
        
     }
-
-    // function handleClick() {
-    //     setVenue([])
-    //     setFormat([])
-    //     setLanguage([])
-    //     setTimeOfDay([])
-    //     setDatePeriod(getDateString(new Date()))
-        
-    //     setSort("time_asc") ///
-    //     setPage(1)///
-    // }
 
     function handleClick() {
        clearAll()

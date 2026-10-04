@@ -6,30 +6,32 @@ export const getDateString=(date:Date)=>{
   return `${year}-${month}-${day}`
 }
 
-//Url last part
-export const createParams = (venue:string[],datePeriod:string,format:string[],language:string[],timeOfDay:string[],sort:string,page:number) => {
-  const params = new URLSearchParams()
+// //Url last part
+// export const createParams = (venue:string[],datePeriod:string,format:string[],language:string[],timeOfDay:string[],sort:string,page:number) => {
+//   const params = new URLSearchParams()
 
-  venue.forEach((item) => {
-    params.append("venues[]", item)
-  })
+//   venue.forEach((item) => {
+//     params.append("venues[]", item)
+//   })
 
-  params.set("date", datePeriod)
+//   params.set("date", datePeriod)
 
-  format.forEach((item) => {
-    params.append("formats[]", item)
-  })
+//   format.forEach((item) => {
+//     params.append("formats[]", item)
+//   })
 
-  language.forEach((item) => {
-    params.append("languages[]", item)
-  })
+//   language.forEach((item) => {
+//     params.append("languages[]", item)
+//   })
 
-  timeOfDay.forEach((item) => {
-    params.append("bands[]", item)
-  })
+//   timeOfDay.forEach((item) => {
+//     params.append("bands[]", item)
+//   })
 
-  params.set("sort", sort)
-  params.set("page", String(page))
+//   params.set("sort", sort)
+//   params.set("page", String(page))
 
-  return params
-}
+ 
+//   console.error(params.toString())
+//    return params
+// }

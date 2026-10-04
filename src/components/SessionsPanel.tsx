@@ -1,27 +1,16 @@
-import { createParams } from "../functions/function"
+// import { createParams } from "../functions/function"
+import useSessionsContext from "../hooks/useSessionsContext"
 import { useSessionsInfo } from "../hooks/useSessionsInfo"
 import Pagination from "./Pagination"
 import SortButton from "./SortButton"
 
-type SessionsPanelProps = {
-    venue: string[]
-    datePeriod: string
-    format: string[]
-    language: string[]
-    timeOfDay: string[]
 
-    sort: string
-    page: number
-    setPage: (value: number) => void
-    setSort: (value: string) => void
 
-}
+const SessionsPanel = () => {
+    const {  searchPar:searchParams, setSort,  setPage,page  }=useSessionsContext()
+    
+    const url = `https://api.kinoxii.redberryinternship.ge/api/sessions?${searchParams}`
 
-const SessionsPanel = ({ venue, datePeriod, format, language, timeOfDay, sort, setSort, page, setPage }: SessionsPanelProps) => {
-
-    const params = createParams(venue, datePeriod, format, language, timeOfDay, sort,  page) 
-
-    const url = `https://api.kinoxii.redberryinternship.ge/api/sessions?${params.toString()}`
 
     const [sessions, meta] = useSessionsInfo(url)
    
@@ -82,7 +71,7 @@ const SessionsPanel = ({ venue, datePeriod, format, language, timeOfDay, sort, s
 
         {/*pagination */}
         {
-            meta && <Pagination meta={meta} setPage={setPage}/>
+            meta && <Pagination meta={meta}/>
         }
 
 
