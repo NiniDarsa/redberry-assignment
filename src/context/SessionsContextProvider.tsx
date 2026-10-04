@@ -30,6 +30,10 @@ type TSessionsContext = {
   setSort: (value: string) => void
   page:number
   searchPar:string
+
+  search:string
+  setSearch: (value: string) => void
+
 };
 
 export const SessionsContext = createContext<TSessionsContext | null>(null);
@@ -49,6 +53,7 @@ const SessionsContextProvider = ({ children }: SessionsContextProviderProp) => {
     const datePeriod = searchParams.get("date") || today
     const sort = searchParams.get("sort") || "time_asc"
     const page = Number(searchParams.get("page")) || 1
+    const search=searchParams.get("search")||""
 
 
 
@@ -103,6 +108,16 @@ const SessionsContextProvider = ({ children }: SessionsContextProviderProp) => {
         setSearchParams(params)
     }
 
+    // SEARCH
+    const setSearch = (value: string) => {
+
+        const params = new URLSearchParams(searchParams)
+
+        params.set("search", value)
+
+        setSearchParams(params)
+    }
+   
 
     //Clear All
     const clearAll = () => {
@@ -151,7 +166,9 @@ const SessionsContextProvider = ({ children }: SessionsContextProviderProp) => {
                 searchPar,
                 setPage,
                 setSort,
-                page
+                page,
+                search,
+                setSearch
             }}
         >
             {children}

@@ -56,8 +56,9 @@ const FiltersPanel = () => {
         ) {
            setFormat(newFormat)
         }
-    // setFormat((prev)=>prev.filter((format)=>availableFormats.includes(format)))
     },[venue.join(","),filterOptions])
+
+
 
     //use it for JSX
     const availableFormats=getAvailableFormats()

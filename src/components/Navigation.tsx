@@ -1,4 +1,8 @@
+import useSessionsContext from "../hooks/useSessionsContext"
+
 const Navigation = () => {
+    const {search,setSearch}=useSessionsContext()
+
     return (<div className="absolute z-10 w-[100vw] flex justify-between items-center pl-15 pr-15 pt-5  text-white">
         <div className="flex items-baseline gap-4">
             <h1 className="font-extrabold">KINO <span className="text-[#EC3013]">XII</span></h1>
@@ -7,7 +11,11 @@ const Navigation = () => {
 
         <div className="flex justify-between items-baseline gap-3">
             <div className="relative w-[24vw]  h-full ">
-                <input type="text" placeholder="search films and live events" className="bg-[#FFFFFF]/10 rounded-full w-full px-10 py-2   "></input>
+                <input 
+                value={search}
+                onChange={(e)=>setSearch(e.target.value)}
+                type="text"
+                 placeholder="search films and live events" className="bg-[#FFFFFF]/10 rounded-full w-full px-10 py-2   "></input>
                 <svg
                     className="absolute left-4 top-1/2 -translate-y-1/2 "
                     width="14"
