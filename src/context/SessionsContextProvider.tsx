@@ -12,7 +12,7 @@ type TSessionsContext = {
   setVenue: (values: string[]) => void
 
   datePeriod: string
-  setDatePeriod: (value: string) => void
+  setDatePeriod: (value: string,change:boolean) => void
 
   format: string[]
   setFormat: (values: string[]) => void
@@ -79,12 +79,13 @@ const SessionsContextProvider = ({ children }: SessionsContextProviderProp) => {
     }
 
     // DATE
-    const setDatePeriod = (value: string) => {
+    const setDatePeriod = (value: string,change:boolean) => {
         const params = new URLSearchParams(searchParams)
 
         params.set("date", value)
+        if(change){
         params.set("page", "1")
-
+        }
         setSearchParams(params)
     }
 
