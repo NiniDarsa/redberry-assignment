@@ -1,20 +1,17 @@
-import { useEffect, useState } from "react"
-import {  GetUser } from "../functions/function"
 import useSessionsContext from "../hooks/useSessionsContext"
 import AuthButtons from "./AuthButtons"
 import Person from "./Person"
 import type { TUserResponse } from "../types/user"
+import useAppContext from "../hooks/useAppContext"
 
 type TNavigation = {
-    ModalOpen: (name: "Sign Up" | "Log In") => void
-    ProfileModalOpen: (arg: boolean) => void
-    isProfileModalOpen: boolean
     user: TUserResponse | undefined
 }
 
 
-const Navigation = ({ ModalOpen, ProfileModalOpen, isProfileModalOpen,user }: TNavigation) => {
+const Navigation = ({ user }: TNavigation) => {
     const { search, setSearch } = useSessionsContext()
+    const{AuthModalOpen:ModalOpen, ProfileModalOpen,isProfileModalOpen  }=useAppContext()
    
 
 

@@ -116,8 +116,9 @@ export const GetUser = async () => {
             ...result,
         };
     }
-
+    console.warn("Es",result)
     return result;
+    
 };
 
 

@@ -1,15 +1,13 @@
 import { useRef } from "react"
 import LoginModal from "./LoginModal"
 import SignUpModal from "./SignUpModal"
+import useAppContext from "../hooks/useAppContext"
 
-type Tmodal={
-    isModalOpen:"Log In"|"Sign Up",
-    setIsModalOpen:React.Dispatch<React.SetStateAction<"" | "Sign Up" | "Log In">>
 
-}
-
-const Modal=({isModalOpen, setIsModalOpen}:Tmodal)=>{
+const Modal=()=>{
+    const {isAuthModalOpen:isModalOpen, setIsAuthModalOpen:setIsModalOpen}=useAppContext()
     const element=useRef(null)
+
 
     const HideModal=(e: React.MouseEvent<HTMLDivElement, MouseEvent>)=>{
        
@@ -18,7 +16,8 @@ const Modal=({isModalOpen, setIsModalOpen}:Tmodal)=>{
         }
     }
     
-    return (<div 
+    return (<>
+    {isModalOpen&&<div 
     ref={element}
     onClick={(e)=>HideModal(e)}
     className="fixed inset-0 z-50 bg-[#1E2031]/50 flex items-center justify-center">
@@ -30,6 +29,7 @@ const Modal=({isModalOpen, setIsModalOpen}:Tmodal)=>{
         
           />}
         </div>
-    </div>)
+    </div>}</>
+)
 }
 export default Modal

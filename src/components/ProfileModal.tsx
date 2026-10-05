@@ -2,13 +2,14 @@ import { useRef, useState } from "react"
 import Person from "./Person"
 import { GetUser, Logout } from "../functions/function"
 import type { TUserResponse } from "../types/user"
+import useAppContext from "../hooks/useAppContext"
 
 type TProfileModal = {
-    ProfileModalOpen: (arg: boolean) => void
     user: TUserResponse | undefined
 }
-const ProfileModal = ({ ProfileModalOpen, user }: TProfileModal) => {
+const ProfileModal = ({  user }: TProfileModal) => {
     const[logoutError, setLogoutError]=useState("")
+    const {ProfileModalOpen, isProfileModalOpen}=useAppContext()
 
     const element = useRef(null)
 
@@ -35,7 +36,7 @@ const ProfileModal = ({ ProfileModalOpen, user }: TProfileModal) => {
         }
 
 
-    return (
+    return (<>{isProfileModalOpen&&
         <div
             ref={element}
             onClick={(e) => HideModal(e)}
@@ -83,6 +84,6 @@ const ProfileModal = ({ ProfileModalOpen, user }: TProfileModal) => {
 
             </div>
 
-        </div>)
+        </div>}</>)
 }
 export default ProfileModal
