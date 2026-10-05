@@ -5,49 +5,24 @@ import SessionsPage from "./components/SessionsPage";
 import Navigation from "./components/Navigation";
 import SessionsContextProvider from "./context/SessionsContextProvider";
 import MovieDetailsPage from "./components/MovieDetailsPage";
-import { useEffect, useState } from "react";
 import Modal from "./components/Modal";
 import ProfileModal from "./components/ProfileModal";
-import { GetUser } from "./functions/function";
-import type { TUserResponse } from "./types/user";
 import AppContextProvider from "./context/AppContextProvider";
+import AuthContextProvider from "./context/AuthContextProvider";
 
 
 
 
 function App() {
 
-  const [user, setUser] = useState<TUserResponse>()
-
-  ////////////
-  useEffect(() => {
-    const getInfoAboutUser = async () => {
-      try {
-        const user: TUserResponse = await GetUser();
-
-        console.error(user);
-        setUser(user)
-      } catch (err: any) {
-        if (err.status === 401) {
-          localStorage.removeItem("token");
-        }
-      }
-    }
-    getInfoAboutUser()
-  }, [])
-
-  //usegetuser()
-
-  ////////////////////
-
-
 
   return (
     <div className="relative h-full w-full">
       <BrowserRouter>
         <AppContextProvider>
+          <AuthContextProvider>
           <SessionsContextProvider>
-            <Navigation user={user} />
+            <Navigation  />
 
             <Routes>
               <Route path="/" element={<HomePage />} />
@@ -57,9 +32,10 @@ function App() {
 
             <Modal/>
           
-            <ProfileModal  user={user} />
+            <ProfileModal />
             <Footer />
           </SessionsContextProvider>
+          </AuthContextProvider>
         </AppContextProvider>
       </BrowserRouter>
     </div>

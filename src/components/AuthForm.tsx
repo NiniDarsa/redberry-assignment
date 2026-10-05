@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
-import { GetUser, Login, Signup } from "../functions/function"
+import {  Login, Signup } from "../functions/function"
+import useAuthContext from "../hooks/useAuthContext"
 
 type TAuthForm = {
     userName?: string,
@@ -30,6 +31,7 @@ const AuthForm = ({ userName, setUserName, email, setEmail, password, setPasswor
     const [loginError, setLoginError] = useState("")
     const [signupError, setSignUpError] = useState<{ username?: string[], email?: string[] }>({})
 
+    const{fetchUser}=useAuthContext()
 
     let isFormFilled = useMemo(() => {
         if (name === "Sign Up") {
@@ -63,7 +65,7 @@ const AuthForm = ({ userName, setUserName, email, setEmail, password, setPasswor
             //Store the token and send it as Authorization: Bearer <token> on every protected request
             //so after succesfull login I have:
             localStorage.setItem("token", data.data.token)
-            // GetUser()
+            await fetchUser()
             setIsModalOpen("")
         } catch (err: any) {
             setPassword("")
@@ -81,7 +83,7 @@ const AuthForm = ({ userName, setUserName, email, setEmail, password, setPasswor
             console.log("SIGNUP DATA", data)
             console.log("TOKEN", data.data?.token)
             localStorage.setItem("token", data.data.token)
-            // GetUser()
+            await fetchUser()
             console.log("STORED TOKEN:", localStorage.getItem("token")) 
             setIsModalOpen("")
         } catch (err: any) {

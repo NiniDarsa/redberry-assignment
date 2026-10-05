@@ -1,16 +1,17 @@
 import useSessionsContext from "../hooks/useSessionsContext"
 import AuthButtons from "./AuthButtons"
 import Person from "./Person"
-import type { TUserResponse } from "../types/user"
 import useAppContext from "../hooks/useAppContext"
+import useAuthContext from "../hooks/useAuthContext"
 
-type TNavigation = {
-    user: TUserResponse | undefined
-}
+// type TNavigation = {
+//     user: TUserResponse | undefined
+// }
 
 
-const Navigation = ({ user }: TNavigation) => {
+const Navigation = () => {
     const { search, setSearch } = useSessionsContext()
+    const {user}=useAuthContext()
     const{AuthModalOpen:ModalOpen, ProfileModalOpen,isProfileModalOpen  }=useAppContext()
    
 

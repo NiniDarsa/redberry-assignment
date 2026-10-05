@@ -1,15 +1,15 @@
 import { useRef, useState } from "react"
 import Person from "./Person"
-import { GetUser, Logout } from "../functions/function"
-import type { TUserResponse } from "../types/user"
+import { Logout } from "../functions/function"
 import useAppContext from "../hooks/useAppContext"
+import useAuthContext from "../hooks/useAuthContext"
 
-type TProfileModal = {
-    user: TUserResponse | undefined
-}
-const ProfileModal = ({  user }: TProfileModal) => {
+
+const ProfileModal = () => {
     const[logoutError, setLogoutError]=useState("")
     const {ProfileModalOpen, isProfileModalOpen}=useAppContext()
+    const {user}=useAuthContext()
+    const{setUser}=useAuthContext()
 
     const element = useRef(null)
 
@@ -25,7 +25,7 @@ const ProfileModal = ({  user }: TProfileModal) => {
                 setLogoutError("")
                 await Logout()
                 localStorage.removeItem("token")
-                // GetUser()
+                setUser(null)
                 ProfileModalOpen(false)
             } catch (err: any) {
                 if (err.status === 401) {
