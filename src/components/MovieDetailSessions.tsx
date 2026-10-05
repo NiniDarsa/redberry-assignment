@@ -10,21 +10,22 @@ type TMovieDetailSessions={
     movieDetails:TMovieDetails|undefined
 }
 const MovieDetailSessions=({name,movieDetails}:TMovieDetailSessions)=>{
-    const { datePeriod, setDatePeriod } = useSessionsContext()
-    const [movieSessions, setMovieSessions] = useMovieSessions(name || "", datePeriod)
+    const { datePeriod, setDatePeriod, searchPar} = useSessionsContext()
+    
+    const [movieSessions, setMovieSessions] = useMovieSessions(name || "", searchPar)
 
     
-
     function handleDateChange(date: string) {
         setDatePeriod(date, false)
     }
+
     return(<>
     
             <div className="flex-3 text-white flex justify-around pl-10 pt-10">
                 <div className="text-white w-3/4 min-w-0">
                     <>
-                        <h2 className="font-extrabold">Sessions</h2>
-                        <p className="text-[#A9A9A9] text-[12px] pb-2">22 sessions over the next seven days</p>
+                        <h2 className="font-extrabold pb-2">Sessions</h2>
+                        {/* <p className="text-[#A9A9A9] text-[12px] pb-2">22 sessions over the next seven days</p> */}
                         <div className="flex gap-2">
                            <DatePicker datePeriod={datePeriod} handleDateChange={handleDateChange}/>
                         </div>

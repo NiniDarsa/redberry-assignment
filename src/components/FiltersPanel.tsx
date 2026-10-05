@@ -123,13 +123,13 @@ const FiltersPanel = () => {
     }
 
 
-    return (<div className="flex flex-col text-white gap-4" >
+    return (<div className="flex flex-col text-white gap-4 " >
         <div className="mb-2">
             <h2 className="font-extrabold">Sessions</h2>
             <p className="font-normal text-[#A9A9A9] text-[12px]">Browse showtimes across all venues</p>
         </div>
 
-        <div className="font-semibold text-[15px] w-[320px]  bg-[#1E2031] rounded-2xl p-6 ">
+        <div className="font-semibold text-[15px] w-[320px]  bg-[#1E2031] rounded-2xl p-6 sticky top-5 ">
             <div className="flex flex-col gap-6 justify-between ">
                 <h3>Filters</h3>
 

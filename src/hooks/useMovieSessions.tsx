@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import type { TVenueSessionsResponse } from "../types/sessionDetail";
 
-export function useMovieSessions(name="",date:string){
+export function useMovieSessions(name="",searchPar:string){
     const [MovieSessions, setMovieSessions] = useState<TVenueSessionsResponse>()
      useEffect(() => {
-            fetch(`https://api.kinoxii.redberryinternship.ge/api/movies/${name}/sessions?date=${date}`)
+            fetch(`https://api.kinoxii.redberryinternship.ge/api/movies/${name}/sessions?${searchPar}`)
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error(`HTTP error: ${response.status}`);
@@ -19,7 +19,7 @@ export function useMovieSessions(name="",date:string){
                 .catch((error) => {
                     console.log(error);
                 });
-        }, [name,date]);
+        }, [name,searchPar]);
         return [MovieSessions]
 
 }
