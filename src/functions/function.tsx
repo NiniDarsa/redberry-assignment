@@ -93,6 +93,8 @@ export const Logout = async () => {
   }
 }
 
+
+
 export const GetUser = async () => {
     const token = localStorage.getItem("token");
 
@@ -117,6 +119,7 @@ export const GetUser = async () => {
 
     return result;
 };
+
 
 
 

@@ -1,14 +1,13 @@
 import { useRef, useState } from "react"
 import Person from "./Person"
-import { Logout } from "../functions/function"
+import { GetUser, Logout } from "../functions/function"
 import type { TUserResponse } from "../types/user"
 
 type TProfileModal = {
     ProfileModalOpen: (arg: boolean) => void
     user: TUserResponse | undefined
-    setToken: React.Dispatch<React.SetStateAction<string | null>>
 }
-const ProfileModal = ({ ProfileModalOpen, user,setToken }: TProfileModal) => {
+const ProfileModal = ({ ProfileModalOpen, user }: TProfileModal) => {
     const[logoutError, setLogoutError]=useState("")
 
     const element = useRef(null)
@@ -25,7 +24,7 @@ const ProfileModal = ({ ProfileModalOpen, user,setToken }: TProfileModal) => {
                 setLogoutError("")
                 await Logout()
                 localStorage.removeItem("token")
-                setToken(null)
+                // GetUser()
                 ProfileModalOpen(false)
             } catch (err: any) {
                 if (err.status === 401) {

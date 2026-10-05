@@ -17,7 +17,6 @@ import type { TUserResponse } from "./types/user";
 function App() {
 const [isAuthModalOpen,setIsAuthModalOpen]=useState<"Sign Up"|"Log In"|"">("")
 const [isProfileModalOpen,setIsProfileModalOpen]=useState(false)
-const [token, setToken]=useState(()=>localStorage.getItem("token"))
 const [user,setUser]=useState<TUserResponse>()
 
 
@@ -28,6 +27,10 @@ const ProfileModalOpen=(arg:boolean)=>{
    setIsProfileModalOpen(arg)
 }
 
+
+
+////////////
+const token=localStorage.getItem("token")
 
 useEffect(()=>{
     const getInfoAboutUser=async()=>{
@@ -40,16 +43,18 @@ useEffect(()=>{
     } catch (err: any) {
         if (err.status === 401) {
             localStorage.removeItem("token");
-            setToken(null)
         }
     }
 }else{
   setUser(undefined)
 }
     }
-
 getInfoAboutUser()
-},[token])
+},[])
+
+////////////////////
+
+
 
   return (
     <div className="relative h-full w-full">
@@ -66,10 +71,10 @@ getInfoAboutUser()
           </Routes>
 
           {isAuthModalOpen && <Modal 
-          setToken={setToken}
+        
           setIsModalOpen={setIsAuthModalOpen} isModalOpen={isAuthModalOpen}/>}
           {isProfileModalOpen&&<ProfileModal 
-          setToken={setToken}
+         
           ProfileModalOpen={ProfileModalOpen} user={user}/>}
           <Footer />
         </SessionsContextProvider>

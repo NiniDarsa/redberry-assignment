@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { Login, Signup } from "../functions/function"
+import { GetUser, Login, Signup } from "../functions/function"
 
 type TAuthForm = {
     userName?: string,
@@ -20,12 +20,11 @@ type TAuthForm = {
 
     avatar?: File | null
 
-     setToken: React.Dispatch<React.SetStateAction<string | null>>
 
 
 }
 
-const AuthForm = ({ userName, setUserName, email, setEmail, password, setPassword, confirmPassword, setConfirmPassword, name, setIsModalOpen, avatar,setToken }: TAuthForm) => {
+const AuthForm = ({ userName, setUserName, email, setEmail, password, setPassword, confirmPassword, setConfirmPassword, name, setIsModalOpen, avatar }: TAuthForm) => {
 
     const [passwordError, setPasswordError] = useState("")
     const [loginError, setLoginError] = useState("")
@@ -64,7 +63,7 @@ const AuthForm = ({ userName, setUserName, email, setEmail, password, setPasswor
             //Store the token and send it as Authorization: Bearer <token> on every protected request
             //so after succesfull login I have:
             localStorage.setItem("token", data.data.token)
-            setToken(data.data.token)
+            // GetUser()
             setIsModalOpen("")
         } catch (err: any) {
             setPassword("")
@@ -82,7 +81,7 @@ const AuthForm = ({ userName, setUserName, email, setEmail, password, setPasswor
             console.log("SIGNUP DATA", data)
             console.log("TOKEN", data.data?.token)
             localStorage.setItem("token", data.data.token)
-            setToken(data.data.token)
+            // GetUser()
             console.log("STORED TOKEN:", localStorage.getItem("token")) 
             setIsModalOpen("")
         } catch (err: any) {

@@ -2,8 +2,8 @@ import { useState } from "react"
 import ModalHeader from "./ModalHeader"
 import AuthForm from "./AuthForm"
 
-const LoginModal = ({setIsModalOpen,setToken}:{ setIsModalOpen:React.Dispatch<React.SetStateAction<"" | "Sign Up" | "Log In">>
-,  setToken: React.Dispatch<React.SetStateAction<string | null>>
+const LoginModal = ({setIsModalOpen}:{ setIsModalOpen:React.Dispatch<React.SetStateAction<"" | "Sign Up" | "Log In">>
+
 }) => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -17,7 +17,7 @@ const LoginModal = ({setIsModalOpen,setToken}:{ setIsModalOpen:React.Dispatch<Re
                 password={password} setPassword={setPassword}
                 name="Log In"
                 setIsModalOpen={setIsModalOpen}
-                setToken={setToken}
+               
             />
         </div>)
 

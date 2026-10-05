@@ -3,9 +3,8 @@ import ModalHeader from "./ModalHeader"
 import AuthForm from "./AuthForm"
 import Avatar from "./Avatar"
 
-const SignUpModal = ({ setIsModalOpen, setToken }: {
+const SignUpModal = ({ setIsModalOpen }: {
     setIsModalOpen: React.Dispatch<React.SetStateAction<"" | "Sign Up" | "Log In">>
-    setToken: React.Dispatch<React.SetStateAction<string | null>>
 
 }) => {
     const [userName, setUserName] = useState("")
@@ -25,7 +24,7 @@ const SignUpModal = ({ setIsModalOpen, setToken }: {
             name="Sign Up"
             setIsModalOpen={setIsModalOpen}
             avatar={avatar}
-            setToken={setToken}
+          
         />
 
     </div>)

@@ -5,11 +5,10 @@ import SignUpModal from "./SignUpModal"
 type Tmodal={
     isModalOpen:"Log In"|"Sign Up",
     setIsModalOpen:React.Dispatch<React.SetStateAction<"" | "Sign Up" | "Log In">>
-    setToken: React.Dispatch<React.SetStateAction<string | null>>
 
 }
 
-const Modal=({isModalOpen, setIsModalOpen,setToken}:Tmodal)=>{
+const Modal=({isModalOpen, setIsModalOpen}:Tmodal)=>{
     const element=useRef(null)
 
     const HideModal=(e: React.MouseEvent<HTMLDivElement, MouseEvent>)=>{
@@ -26,9 +25,9 @@ const Modal=({isModalOpen, setIsModalOpen,setToken}:Tmodal)=>{
         <div >
           {isModalOpen==="Log In"?
           <LoginModal setIsModalOpen={setIsModalOpen}
-          setToken={setToken}/>
+          />
           :<SignUpModal setIsModalOpen={setIsModalOpen}
-          setToken={setToken}
+        
           />}
         </div>
     </div>)
