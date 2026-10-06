@@ -5,6 +5,13 @@ import SessionsPage from "./components/SessionsPage";
 import Navigation from "./components/Navigation";
 import SessionsContextProvider from "./context/SessionsContextProvider";
 import MovieDetailsPage from "./components/MovieDetailsPage";
+import Modal from "./components/Modal";
+import ProfileModal from "./components/ProfileModal";
+import AppContextProvider from "./context/AppContextProvider";
+import AuthContextProvider from "./context/AuthContextProvider";
+
+
+
 
 function App() {
 
@@ -12,16 +19,24 @@ function App() {
   return (
     <div className="relative h-full w-full">
       <BrowserRouter>
-        <SessionsContextProvider>
+        <AppContextProvider>
+          <AuthContextProvider>
+          <SessionsContextProvider>
+            <Navigation  />
 
-          <Navigation />
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/sessions" element={<SessionsPage />} />
-            <Route path="/movie/:name" element={<MovieDetailsPage />} />
-          </Routes>
-          <Footer />
-        </SessionsContextProvider>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/sessions" element={<SessionsPage />} />
+              <Route path="/movie/:name" element={<MovieDetailsPage />} />
+            </Routes>
+
+            <Modal/>
+          
+            <ProfileModal />
+            <Footer />
+          </SessionsContextProvider>
+          </AuthContextProvider>
+        </AppContextProvider>
       </BrowserRouter>
     </div>
   )

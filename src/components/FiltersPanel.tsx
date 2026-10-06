@@ -123,13 +123,13 @@ const FiltersPanel = () => {
     }
 
 
-    return (<div className="flex flex-col text-white gap-4" >
+    return (<div className="flex flex-col text-white gap-4 " >
         <div className="mb-2">
             <h2 className="font-extrabold">Sessions</h2>
             <p className="font-normal text-[#A9A9A9] text-[12px]">Browse showtimes across all venues</p>
         </div>
 
-        <div className="font-semibold text-[15px] w-[320px]  bg-[#1E2031] rounded-2xl p-6 ">
+        <div className="font-semibold text-[15px] w-[320px]  bg-[#1E2031] rounded-2xl p-6 sticky top-5 ">
             <div className="flex flex-col gap-6 justify-between ">
                 <h3>Filters</h3>
 
@@ -142,7 +142,7 @@ const FiltersPanel = () => {
 
                                 <input
                                     type="checkbox"
-                                    className="appearance-none w-5 h-5 border border-[#A9A9A9] rounded-sm bg-transparent checked:bg-[#A9A9A9]"
+                                    className="appearance-none w-5 h-5 border border-[#A9A9A9] rounded-sm bg-transparent checked:bg-[#EC3013]"
 
                                     checked={venue.includes(item?.slug)}
                                     onChange={() => handlevVenueChange(item.slug)}
@@ -174,7 +174,7 @@ const FiltersPanel = () => {
                                 <label key={item.id} className="flex gap-3">
                                     <input
                                         type="checkbox"
-                                        className="appearance-none w-5 h-5 border border-[#A9A9A9] rounded-sm bg-transparent checked:bg-[#A9A9A9]"
+                                        className="appearance-none w-5 h-5 border border-[#A9A9A9] rounded-sm bg-transparent checked:bg-[#EC3013]"
                                         checked={format.includes(item.slug)}
                                         onChange={() => handleFormatChange(item.slug)}
                                     />
@@ -194,7 +194,7 @@ const FiltersPanel = () => {
                             return (<label key={item.id} className="flex gap-3">
                                 <input
                                     type="checkbox"
-                                    className="appearance-none w-5 h-5 border border-[#A9A9A9] rounded-sm bg-transparent checked:bg-[#A9A9A9]"
+                                    className="appearance-none w-5 h-5 border border-[#A9A9A9] rounded-sm bg-transparent checked:bg-[#EC3013]"
 
                                     checked={language.includes(item.slug)}
                                     onChange={() => handleLanguageChange(item.slug)}
@@ -215,7 +215,7 @@ const FiltersPanel = () => {
                             return (<label key={item.id} className="flex gap-3">
                                 <input
                                     type="checkbox"
-                                    className="appearance-none w-5 h-5 border border-[#A9A9A9] rounded-sm bg-transparent checked:bg-[#A9A9A9]"
+                                    className="appearance-none w-5 h-5 border border-[#A9A9A9] rounded-sm bg-transparent checked:bg-[#EC3013]"
                                     checked={timeOfDay.includes(item.id)}
                                     onChange={() => handleTimeOfDayChange(item.id)}
                                 />

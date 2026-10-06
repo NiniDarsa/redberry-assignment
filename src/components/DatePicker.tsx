@@ -24,7 +24,7 @@ const DatePicker=({datePeriod,handleDateChange}:TDatePicker)=>{
                                                 onChange={() => handleDateChange(dateValue)}
                                             />
     
-                                            <div className="flex flex-col items-center rounded-xl px-4 py-2 bg-[#2A2D3C] text-white peer-checked:bg-[#A9A9A9] peer-checked:text-black">
+                                            <div className="flex flex-col items-center rounded-xl px-4 py-2 bg-[#2A2D3C] text-white peer-checked:bg-[#EC3013] peer-checked:text-white">
                                                 <span>
                                                     {date.toLocaleDateString("en-US", {
                                                         weekday: "short",

@@ -7,6 +7,7 @@ const HomePage = () => {
         <HeroSection />
         <NowPlayingSection />
         <ComingSoon />
+
     </>)
 }
 export default HomePage

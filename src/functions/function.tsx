@@ -1,37 +1,126 @@
 //"2026-10-3"
-export const getDateString=(date:Date)=>{
-  const year=date.getFullYear()
-  const month=String(date.getMonth()+1).padStart(2,"0")
-  const day=String(date.getDate()).padStart(2,"0")
+export const getDateString = (date: Date) => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const day = String(date.getDate()).padStart(2, "0")
   return `${year}-${month}-${day}`
 }
 
-// //Url last part
-// export const createParams = (venue:string[],datePeriod:string,format:string[],language:string[],timeOfDay:string[],sort:string,page:number) => {
-//   const params = new URLSearchParams()
 
-//   venue.forEach((item) => {
-//     params.append("venues[]", item)
-//   })
 
-//   params.set("date", datePeriod)
+export const Login = async (EmailPasswordObject: { email: string, password: string }) => {
+  try {
+    const response = await fetch("https://api.kinoxii.redberryinternship.ge/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(EmailPasswordObject),
 
-//   format.forEach((item) => {
-//     params.append("formats[]", item)
-//   })
+    });
+    const result = await response.json()
+    // console.warn(result)
+    if (!response.ok) {
+      throw {
+        status: response.status,
+        ...result
+      }
+    }
+    return result
+  } catch (error) {
+    throw error
+  }
 
-//   language.forEach((item) => {
-//     params.append("languages[]", item)
-//   })
+}
 
-//   timeOfDay.forEach((item) => {
-//     params.append("bands[]", item)
-//   })
+export const Signup = async (username="", email:string, password:string, confirmpassword="" ,avatar:File|null|undefined) => {
+  const formData = new FormData();
+  formData.append("username", username);
+  formData.append("email", email);
+  formData.append("password", password);
+  formData.append("password_confirmation", confirmpassword);
+  if (avatar) {
+    formData.append("avatar", avatar)
+   }
 
-//   params.set("sort", sort)
-//   params.set("page", String(page))
+  try {
+    const response = await fetch("https://api.kinoxii.redberryinternship.ge/api/register", 
+      {
+      method: "POST",
+      body: formData,
+    });
+    const result = await response.json()
+    console.warn(result)
+    if (!response.ok) {
+      throw {
+        status: response.status,
+        ...result
+      }
+    }
+    return result
+
+
+  } catch (error) {
+    throw error
+  }
+}
+
+export const Logout = async () => {
+  const token=localStorage.getItem("token")
+
+  try {
+    const response = await fetch("https://api.kinoxii.redberryinternship.ge/api/logout", {
+      method:"POST",
+      headers:{
+        Authorization:`Bearer ${token}`,
+        accept:"*/*"
+      }
+
+    });
 
  
-//   console.error(params.toString())
-//    return params
-// }
+    if (!response.ok) {
+         const result = await response.json()
+  
+      throw {
+        status: response.status,
+        ...result
+      }
+    }
+    return 
+  } catch (error) {
+    throw error
+  }
+}
+
+
+export const GetUser = async () => {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+        "https://api.kinoxii.redberryinternship.ge/api/me",
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "*/*",
+            },
+        }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw {
+            status: response.status,
+            ...result,
+        };
+    }
+    return result;
+    
+};
+
+
+
+
+
+
