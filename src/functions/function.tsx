@@ -93,7 +93,6 @@ export const Logout = async () => {
   }
 }
 
-
 export const GetUser = async () => {
     const token = localStorage.getItem("token");
 
@@ -118,6 +117,32 @@ export const GetUser = async () => {
     return result;
     
 };
+
+export const GetOrders = async (filter?: "upcoming" | "past") => {
+    const token = localStorage.getItem("token")
+
+    const url = filter
+        ? `https://api.kinoxii.redberryinternship.ge/api/orders?filter=${filter}`
+        : "https://api.kinoxii.redberryinternship.ge/api/orders"
+
+    const response = await fetch(url, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+        },
+    })
+
+    const result = await response.json()
+
+    if (!response.ok) {
+        throw {
+            status: response.status,
+            ...result,
+        }
+    }
+
+    return result
+}
 
 
 

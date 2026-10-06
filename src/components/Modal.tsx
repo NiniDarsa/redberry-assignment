@@ -6,7 +6,7 @@ import useAppContext from "../hooks/useAppContext"
 
 const Modal=()=>{
     const {isAuthModalOpen:isModalOpen, setIsAuthModalOpen:setIsModalOpen}=useAppContext()
-    const element=useRef(null)
+    const element=useRef<HTMLDivElement>(null)
 
 
     const HideModal=(e: React.MouseEvent<HTMLDivElement, MouseEvent>)=>{

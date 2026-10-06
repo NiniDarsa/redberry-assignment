@@ -1,4 +1,4 @@
-import { createContext, useEffect, useMemo, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { GetUser } from "../functions/function";
 import type { TUserResponse } from "../types/user";
 

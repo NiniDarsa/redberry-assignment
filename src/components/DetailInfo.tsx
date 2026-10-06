@@ -1,9 +1,12 @@
+import useAuthContext from "../hooks/useAuthContext"
 import type { TMovieDetails } from "../types/movies"
 
 type TDetailInfo={
     movieDetails:TMovieDetails|undefined
 }
 const DetailInfo=({movieDetails}:TDetailInfo)=>{
+    const {user}=useAuthContext()
+    console.error(user,movieDetails?.ageRating)
     return(<>
        <div className="flex-1 flex flex-col gap-4 pt-10">
                     <h2 className="font-extrabold">Details</h2>
@@ -38,13 +41,13 @@ const DetailInfo=({movieDetails}:TDetailInfo)=>{
                         <h3 className="text-[#A9A9A9]">FROM</h3>
                         <p>{movieDetails?.fromPrice} ლ</p>
                     </div>
-
                     <div className="bg-[#E27E041A] p-4 rounded-2xl w-[90%]">
                         <h3 className="text-[#E27E04]">RATING NOTE</h3>
                         <p className="text-[#E27E04]">{movieDetails?.ageRating.description}</p>
 
 
                     </div>
+
 
                 </div>
     </>)

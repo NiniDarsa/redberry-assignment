@@ -3,6 +3,7 @@ import AuthButtons from "./AuthButtons"
 import Person from "./Person"
 import useAppContext from "../hooks/useAppContext"
 import useAuthContext from "../hooks/useAuthContext"
+import { useNavigate } from "react-router-dom"
 
 
 
@@ -12,12 +13,16 @@ const Navigation = () => {
     const {user}=useAuthContext()
     const{AuthModalOpen:ModalOpen, ProfileModalOpen,isProfileModalOpen  }=useAppContext()
    
-
+   const navigate=useNavigate()
 
     return (<div className="absolute z-10 w-[100vw] flex justify-between items-center pl-15 pr-15 pt-5  text-white">
         <div className="flex flex-3 items-baseline gap-4">
-            <h1 className="font-extrabold">KINO <span className="text-[#EC3013]">XII</span></h1>
-            <p className="font-semibold text-[20px]">sessions</p>
+            <h1 
+            onClick={() => navigate("/")}
+            className="font-extrabold cursor-pointer">KINO <span className="text-[#EC3013]">XII</span></h1>
+            <p 
+            onClick={() => navigate("/sessions")}
+            className="font-semibold text-[20px] cursor-pointer">sessions</p>
         </div>
 
         <div className="flex flex-2 justify-between items-baseline gap-3">
@@ -50,7 +55,7 @@ const Navigation = () => {
 
                 <p className="text-[14px]">{user.data.username}</p>
                 <button
-                    className="cursor-pointer"
+                    className="cursor-pointer w-7 h-7 flex justify-center items-center"
                     onClick={() => ProfileModalOpen(true)}
                 >
                     {!isProfileModalOpen ?
