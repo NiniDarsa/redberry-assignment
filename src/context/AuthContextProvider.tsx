@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import { GetUser } from "../functions/function";
 import type { TUserResponse } from "../types/user";
 
@@ -9,7 +9,14 @@ type AuthContextProviderProps = {
 type TAuthContext = {
     user: TUserResponse | null;
     setUser: React.Dispatch<React.SetStateAction<TUserResponse | null>>;
-    fetchUser: () => Promise<void>
+    fetchUser: () => Promise<void>;
+    name:string;
+    setName: React.Dispatch<React.SetStateAction<string>>;
+    mobile:string;
+    setMobile: React.Dispatch<React.SetStateAction<string>>
+    dateOfBirth:string;
+    setDateOfBirth: React.Dispatch<React.SetStateAction<string>>;
+    isProfileComplete:boolean
 };
 
 export const AuthContext = createContext<TAuthContext | null>(null);
@@ -17,6 +24,21 @@ export const AuthContext = createContext<TAuthContext | null>(null);
 const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
     const [user, setUser] = useState<TUserResponse|null>(null);
+
+    ////
+    const [name, setName] = useState("")
+    const [mobile, setMobile] = useState("")
+    const [dateOfBirth, setDateOfBirth] = useState("")
+
+    const isProfileComplete = useMemo(() => {
+        return (
+            name.trim() !== "" &&
+            /^5\d{8}$/.test(mobile) &&
+            dateOfBirth !== ""
+        )
+    }, [name, mobile, dateOfBirth])
+
+
 
     const fetchUser=async()=>{
        const user= await GetUser()
@@ -54,7 +76,14 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
             value={{
                 user,
                 setUser,
-                fetchUser
+                fetchUser,
+                  name,
+        setName,
+        mobile,
+        setMobile,
+        dateOfBirth,
+        setDateOfBirth,
+        isProfileComplete
             }}
         >
             {children}

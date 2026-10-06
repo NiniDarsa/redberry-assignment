@@ -9,6 +9,7 @@ import Modal from "./components/Modal";
 import ProfileModal from "./components/ProfileModal";
 import AppContextProvider from "./context/AppContextProvider";
 import AuthContextProvider from "./context/AuthContextProvider";
+import ProfilePage from "./components/ProfilePage";
 
 
 
@@ -22,18 +23,21 @@ function App() {
         <AppContextProvider>
           <AuthContextProvider>
           <SessionsContextProvider>
+        
             <Navigation  />
 
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/sessions" element={<SessionsPage />} />
               <Route path="/movie/:name" element={<MovieDetailsPage />} />
+              <Route path="/profile" element={<ProfilePage/>}/>
             </Routes>
 
             <Modal/>
-          
             <ProfileModal />
+
             <Footer />
+            
           </SessionsContextProvider>
           </AuthContextProvider>
         </AppContextProvider>

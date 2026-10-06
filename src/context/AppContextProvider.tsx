@@ -11,7 +11,8 @@ type TAppContext = {
 
     isProfileModalOpen: boolean;
     ProfileModalOpen: (arg: boolean) => void;
-    setIsAuthModalOpen: React.Dispatch<React.SetStateAction<"" | "Sign Up" | "Log In">>
+    setIsAuthModalOpen: React.Dispatch<React.SetStateAction<"" | "Sign Up" | "Log In">>;
+    setIsProfileModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 };
 
 export const AppContext = createContext<TAppContext | null>(null);
@@ -39,7 +40,8 @@ const AppContextProvider = ({ children }: AppContextProviderProps) => {
                 AuthModalOpen,
                 isProfileModalOpen,
                 ProfileModalOpen,
-                setIsAuthModalOpen
+                setIsAuthModalOpen,
+                setIsProfileModalOpen
             }}
         >
             {children}
