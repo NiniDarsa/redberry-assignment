@@ -6,7 +6,7 @@ export type TUser = {
     fullName: string | null;
     id: number;
     mobileNumber: string | null;
-    preferredVenue: string | null;
+    preferredVenue: {id:string,name:string,slug:string,city:string};
     profileComplete: boolean;
     username: string;
 };

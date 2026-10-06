@@ -16,29 +16,27 @@ import ProfilePage from "./components/ProfilePage";
 
 function App() {
 
-
   return (
     <div className="relative h-full w-full">
       <BrowserRouter>
         <AppContextProvider>
           <AuthContextProvider>
-          <SessionsContextProvider>
-        
-            <Navigation  />
+            <SessionsContextProvider>
+              <Navigation />
 
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/sessions" element={<SessionsPage />} />
-              <Route path="/movie/:name" element={<MovieDetailsPage />} />
-              <Route path="/profile" element={<ProfilePage/>}/>
-            </Routes>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/sessions" element={<SessionsPage />} />
+                <Route path="/movie/:name" element={<MovieDetailsPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+              </Routes>
 
-            <Modal/>
-            <ProfileModal />
+              <Modal />
+              <ProfileModal />
 
-            <Footer />
-            
-          </SessionsContextProvider>
+              <Footer />
+
+            </SessionsContextProvider>
           </AuthContextProvider>
         </AppContextProvider>
       </BrowserRouter>

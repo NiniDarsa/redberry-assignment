@@ -1,112 +1,99 @@
-import { useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import useAuthContext from "../hooks/useAuthContext"
 import { useFilterOptions } from "../hooks/useFilterOptions"
 import type { TVenue } from "../types/filters"
 
 const ProfilePage = () => {
- 
-    const [selectVenue, setSelectVenue] = useState("")
-    const{name,setName,mobile,setMobile,dateOfBirth,setDateOfBirth,isProfileComplete}=useAuthContext()
 
+    const { user,fetchUser } = useAuthContext()
+
+    const [name, setName] = useState("")
+    const [mobile, setMobile] = useState("")
+    const [dateOfBirth, setDateOfBirth] = useState("")
+    const [selectVenue, setSelectVenue] = useState<string|null>(null)
     const [errors, setErrors] = useState({
-        name: "",
-        mobile: "",
+        fullName: "",
+        mobileNumber: "",
         dateOfBirth: "",
     })
+
 
     const [isLoading, setIsLoading] = useState(false)
     const [hasChanges, setHasChanges] = useState(false)
 
     console.log(errors)
 
-    const { user } = useAuthContext()
     const [filterOptions] = useFilterOptions()
 
-    const validateForm = () => {
-        const newErrors = {
-            name: "",
-            mobile: "",
-            dateOfBirth: "",
+    useEffect(() => {
+        if (user?.data) {
+            setName(user.data.fullName ?? "")
+            setMobile(user.data.mobileNumber ?? "")
+            setDateOfBirth(user.data.dateOfBirth ?? "")
+            setSelectVenue(user.data.preferredVenue?.id)
         }
-
-        if (!name.trim()) {
-            newErrors.name = "Name is required"
-        } else if (name.trim().length < 3) {
-            newErrors.name = "Name must be at least 3 characters"
-        } else if (name.trim().length > 50) {
-            newErrors.name = "Name must not exceed 50 characters"
-        }
+    }, [user])
 
 
-        if (!mobile) {
-            newErrors.mobile = "Mobile number is required"
-        } else if (!mobile.startsWith("5")) {
-            newErrors.mobile =
-                "Georgian mobile numbers must start with 5"
-        } else if (mobile.length !== 9) {
-            newErrors.mobile =
-                "Mobile number must be exactly 9 digits"
-        } else if (!/^\d+$/.test(mobile)) {
-            newErrors.mobile =
-                "Please enter a valid Georgian mobile number (9 digits starting with 5)"
-        }
+  
 
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
 
+    setErrors({
+        fullName: "",
+        mobileNumber: "",
+        dateOfBirth: "",
+    })
 
-        if (!dateOfBirth) {
-            newErrors.dateOfBirth = "Date of birth is required"
-        } else {
-            const birthDate = new Date(dateOfBirth)
-            const today = new Date()
+    const formData = new FormData()
 
-            const minimumBirthDate = new Date(
-                today.getFullYear() - 12,
-                today.getMonth(),
-                today.getDate()
-            )
+    formData.append("fullName", name)
+    formData.append("mobileNumber", mobile.replace(/\s/g, ""))
+    formData.append("dateOfBirth", dateOfBirth)
 
-            if (birthDate > today) {
-                newErrors.dateOfBirth = "Please enter a valid date of birth"
-            } else if (birthDate > minimumBirthDate) {
-                newErrors.dateOfBirth =
-                    "You must be at least 12 years old"
-            }
-        }
-
-        setErrors(newErrors)
-
-        return !Object.values(newErrors).some(
-            (error) => error !== ""
-        )
+    if (selectVenue) {
+        formData.append("preferredVenueId", selectVenue)
     }
 
+    setIsLoading(true)
 
+    try {
+        const response = await fetch(
+            "https://api.kinoxii.redberryinternship.ge/api/profile",
+            {
+                method: "PUT",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    Accept: "*/*",
+                },
+                body: formData,
+            }
+        )
 
+        const result = await response.json()
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+        if (!response.ok) {
+            if (response.status === 422) {
+                setErrors({
+                    fullName: result.errors?.fullName?.[0] ?? "",
+                    mobileNumber: result.errors?.mobileNumber?.[0] ?? "",
+                    dateOfBirth: result.errors?.dateOfBirth?.[0] ?? "",
+                })
+            }
 
-        const isValid = validateForm()
-
-        if (!isValid) {
             return
         }
 
-        console.log("Form is valid")
+        console.log("Profile saved", result)
+        await fetchUser()
+        setHasChanges(false)
 
-        setIsLoading(true)
-
-        try {
-            // your API request will go here
-
-            console.log("Profile saved")
-
-            setHasChanges(false)
-        } finally {
-            setIsLoading(false)
-        }
+    } finally {
+        setIsLoading(false)
+       
     }
-
+}
 
 
 
@@ -124,7 +111,7 @@ const ProfilePage = () => {
             </div>
 
 
-            {isProfileComplete ? (
+            {user?.data.profileComplete ? (
                 <p className="text-green-500">
                     Profile Complete ✓
                 </p>
@@ -147,10 +134,10 @@ const ProfilePage = () => {
                         onChange={(e) => { setName(e.target.value), setHasChanges(true) }}
                     />
 
-                    {errors.name && (
+                    {errors.fullName && (
                         <p className="text-red-500 text-sm flex items-center gap-2">
                             <span className="w-1.5 h-1.5 bg-[#EC3013] rounded-full" />
-                            {errors.name}
+                            {errors.fullName}
                         </p>
                     )}
                 </>
@@ -169,10 +156,10 @@ const ProfilePage = () => {
                         value={mobile}
                         onChange={(e) => { setMobile(e.target.value), setHasChanges(true) }}
                     />
-                    {errors.mobile && (
+                    {errors.mobileNumber && (
                         <p className="text-red-500 text-sm flex items-center gap-2">
                             <span className="w-1.5 h-1.5 bg-[#EC3013] rounded-full" />
-                            {errors.mobile}
+                            {errors.mobileNumber}
                         </p>
                     )}
                 </>
@@ -197,18 +184,15 @@ const ProfilePage = () => {
                     <label htmlFor="preferredVenue">Preferred venue (optional)</label>
                     <div className="relative">
                         <select
-                            value={selectVenue}
+                            value={selectVenue||""}
                             onChange={(e) => { setSelectVenue(e.target.value), setHasChanges(true) }}
                             name="preferedVenue"
                             id="preferredVenue"
                             className="bg-[#1E2031] rounded-md px-3 py-2 pr-10 appearance-none w-full"
                         >
-                            {/* <option value="" hidden>
-                                Select a venue
-                            </option> */}
 
                             {filterOptions?.venues.map((item: TVenue) => {
-                                return <option value={item.name}>{item.name}</option>
+                                return <option value={item.id}>{item.name}</option>
 
                             })}
 
@@ -225,8 +209,8 @@ const ProfilePage = () => {
 
                 <button
                     type="submit"
-                    disabled={!hasChanges || !isProfileComplete || isLoading}
-                    className={`text-white mt-4 p-2 px-10 rounded-3xl text-center w-fit ${!hasChanges || !isProfileComplete || isLoading
+                    disabled={!hasChanges || isLoading}
+                    className={`text-white mt-4 p-2 px-10 rounded-3xl text-center w-fit ${!hasChanges || isLoading
                         ? "bg-[#505261] cursor-not-allowed"
                         : "bg-[#EC3013] cursor-pointer"
                         }`}>  {isLoading ? "Saving..." : "Save changes"}</button>

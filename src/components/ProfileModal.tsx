@@ -10,8 +10,8 @@ const ProfileModal = () => {
     const [logoutError, setLogoutError] = useState("")
     const { ProfileModalOpen, isProfileModalOpen,setIsAuthModalOpen, setIsProfileModalOpen} = useAppContext()
     ////////
-    const { user,setUser,isProfileComplete } = useAuthContext()
-   
+    const { user,setUser} = useAuthContext()
+   console.error(user?.data.profileComplete)
 
     const element = useRef(null)
 
@@ -73,7 +73,7 @@ const navigate=useNavigate()
                             ? "bg-[#22C55E1A] text-[#22C55E]"
                             : "bg-[#E27E041A] text-[#E27E04]"
                         }`}                >
-                    <h3 className="text-[#E27E04]">{user?.data.profileComplete ? "Profile Complete" : "Profile Incomplete"}</h3>
+                    <h3 >{user?.data.profileComplete ? "Profile Complete" : "Profile Incomplete"}</h3>
                     <p>{!user?.data.profileComplete && " Please Complete your profile to enable booking"}
                     </p>
                 </div>
