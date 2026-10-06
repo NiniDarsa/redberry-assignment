@@ -43,14 +43,19 @@ const ProfileModal = () => {
             className="fixed inset-0 z-50 bg-[#1E2031]/50 flex items-start justify-end pt-20 pr-10">
             <div className="w-75  bg-[#070C1C] rounded-3xl p-8 text-white flex flex-col gap-4">
                 <div className="flex items-center gap-4">
-                    <Person user={user}/>
-                    <div>
+                    <Person/>
+                    <div className="text-white">
                         <h3>{user?.data.fullName}</h3>
                         <p>{user?.data.email}</p>
 
                     </div>
                 </div>
-                <div className="rounded-2xl bg-[#E27E041A] p-2 flex flex-col justify-center items-start">
+                <div 
+className={`rounded-2xl p-2 flex flex-col justify-center items-start ${
+        user?.data.profileComplete
+            ? "bg-[#22C55E1A] text-[#22C55E]"
+            : "bg-[#E27E041A] text-[#E27E04]"
+    }`}                >
                     <h3 className="text-[#E27E04]">{user?.data.profileComplete?"Profile Complete":"Profile Incomplete"}</h3>
                     <p>{!user?.data.profileComplete&&" Please Complete your profile to enable booking"}
                        </p>

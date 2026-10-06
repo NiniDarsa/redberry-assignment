@@ -20,7 +20,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
     const fetchUser=async()=>{
        const user= await GetUser()
-        setUser(user)
+       setUser(user)
     }
 
     useEffect(() => {

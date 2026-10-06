@@ -4,9 +4,7 @@ import Person from "./Person"
 import useAppContext from "../hooks/useAppContext"
 import useAuthContext from "../hooks/useAuthContext"
 
-// type TNavigation = {
-//     user: TUserResponse | undefined
-// }
+
 
 
 const Navigation = () => {
@@ -48,9 +46,9 @@ const Navigation = () => {
 
            {user?
            <div className="flex flex-1 gap-2 justify-between items-center">
-                <Person user={user} />
+                <Person />
 
-                <h3>{user.data.fullName}</h3>
+                <p className="text-[14px]">{user.data.username}</p>
                 <button
                     className="cursor-pointer"
                     onClick={() => ProfileModalOpen(true)}
