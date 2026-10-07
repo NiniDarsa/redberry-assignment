@@ -17,7 +17,6 @@ const MovieDetailsPage = () => {
     const {searchPar}=useSessionsContext()
     const [movieSessions, setMovieSessions] = useMovieSessions(name || "", searchPar)
    
-     
 
     return (
         <div className="bg-[#070c1c] w-full flex flex-col pb-10">
@@ -27,6 +26,7 @@ const MovieDetailsPage = () => {
            />
 
            <TicketPurchaseModal 
+           age={movieDetails?.ageRating.minAge}
            name={movieDetails?.title}
            isModalOpen={isOpen} ref={ref} clickedSession={clickedSession}/>
         </div>)

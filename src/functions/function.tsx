@@ -197,7 +197,46 @@ export const GetSeatMap = async (sessionId: number) => {
     return result.data
 }
 
+export const HoldSeats = async (
+    sessionId: number,
+    seats: {
+        seatId: number
+        ticketType: "adult" | "student" | "child"
+    }[]
+) => {
+    const token = localStorage.getItem("token")
+    console.log(sessionId)
+    
+    const response = await fetch(
+      
+        `https://api.kinoxii.redberryinternship.ge/api/sessions/${sessionId}/holds`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+            },
+            body: JSON.stringify({
+                seats,
+            }),
+        }
+    )
 
+     const result = await response.json().catch(() => ({}))
+
+     console.log("HOLD STATUS:", response.status)
+     console.log("HOLD RESPONSE:", result)
+
+    if (!response.ok) {
+        throw {
+            status: response.status,
+            ...result,
+        }
+    }
+
+    return result
+}
 
 
 

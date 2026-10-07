@@ -36,6 +36,8 @@ export type TSort = {
 export type TTicketType = {
     id: string;
     name: string;
+    slug:string;
+    priceRatio:number
 };
 
 export type TTimeBand = {
