@@ -8,31 +8,31 @@ type SessionsContextProviderProp = {
 };
 
 type TSessionsContext = {
-  venue: string[]
-  setVenue: (values: string[]) => void
+    venue: string[]
+    setVenue: (values: string[]) => void
 
-  datePeriod: string
-  setDatePeriod: (value: string,change:boolean) => void
+    datePeriod: string
+    setDatePeriod: (value: string, change: boolean) => void
 
-  format: string[]
-  setFormat: (values: string[]) => void
+    format: string[]
+    setFormat: (values: string[]) => void
 
-  language: string[]
-  setLanguage: (values: string[]) => void
+    language: string[]
+    setLanguage: (values: string[]) => void
 
-  timeOfDay: string[]
-  setTimeOfDay: (values: string[]) => void
+    timeOfDay: string[]
+    setTimeOfDay: (values: string[]) => void
 
-  sort: string
-  clearAll:()=>void
+    sort: string
+    clearAll: () => void
 
-  setPage: (value: number) => void
-  setSort: (value: string) => void
-  page:number
-  searchPar:string
+    setPage: (value: number) => void
+    setSort: (value: string) => void
+    page: number
+    searchPar: string
 
-  search:string
-  setSearch: (value: string) => void
+    search: string
+    setSearch: (value: string) => void
 
 };
 
@@ -53,7 +53,7 @@ const SessionsContextProvider = ({ children }: SessionsContextProviderProp) => {
     const datePeriod = searchParams.get("date") || today
     const sort = searchParams.get("sort") || "time_asc"
     const page = Number(searchParams.get("page")) || 1
-    const search=searchParams.get("search")||""
+    const search = searchParams.get("search") || ""
 
 
 
@@ -79,12 +79,12 @@ const SessionsContextProvider = ({ children }: SessionsContextProviderProp) => {
     }
 
     // DATE
-    const setDatePeriod = (value: string,change:boolean) => {
+    const setDatePeriod = (value: string, change: boolean) => {
         const params = new URLSearchParams(searchParams)
 
         params.set("date", value)
-        if(change){
-        params.set("page", "1")
+        if (change) {
+            params.set("page", "1")
         }
         setSearchParams(params)
     }
@@ -114,11 +114,15 @@ const SessionsContextProvider = ({ children }: SessionsContextProviderProp) => {
 
         const params = new URLSearchParams(searchParams)
 
-        params.set("search", value)
+        if (value.trim()) {
+            params.set("search", value)
+        } else {
+            params.delete("search") 
+        }
 
         setSearchParams(params)
     }
-   
+
 
     //Clear All
     const clearAll = () => {
@@ -131,24 +135,24 @@ const SessionsContextProvider = ({ children }: SessionsContextProviderProp) => {
         setSearchParams(params)
     }
 
-    const  setVenue=(values:string[]) => {
+    const setVenue = (values: string[]) => {
         updateParams("venues[]", values)
     }
-      
-     const setFormat=(values:string[]) => {
+
+    const setFormat = (values: string[]) => {
         updateParams("formats[]", values)
     }
-     
-    const setLanguage=(values:string[]) => {
+
+    const setLanguage = (values: string[]) => {
         updateParams("languages[]", values)
     }
-      
-    const  setTimeOfDay=(values:string[]) =>{
-         updateParams("bands[]", values)
-        }
-     
-    const searchPar= searchParams.toString()
-     
+
+    const setTimeOfDay = (values: string[]) => {
+        updateParams("bands[]", values)
+    }
+
+    const searchPar = searchParams.toString()
+
     return (
         <SessionsContext.Provider
             value={{

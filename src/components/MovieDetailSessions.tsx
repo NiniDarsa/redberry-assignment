@@ -1,3 +1,4 @@
+import useAuthContext from "../hooks/useAuthContext";
 import { useMovieSessions } from "../hooks/useMovieSessions";
 import useSessionsContext from "../hooks/useSessionsContext";
 import type { TMovieDetails } from "../types/movies";
@@ -13,6 +14,8 @@ const MovieDetailSessions = ({ name, movieDetails }: TMovieDetailSessions) => {
     const { datePeriod, setDatePeriod, searchPar } = useSessionsContext()
 
     const [movieSessions, setMovieSessions] = useMovieSessions(name || "", searchPar)
+
+    const { user } = useAuthContext()
 
     console.warn("ESA", movieSessions)
 
@@ -76,12 +79,18 @@ const MovieDetailSessions = ({ name, movieDetails }: TMovieDetailSessions) => {
                                                 return (
                                                     <div
                                                         key={hall.id}
-                                                        className="bg-[#1E2031] p-3 rounded-2xl shrink-0 w-fit"
+                                                        className={`p-3 rounded-2xl shrink-0 w-fit ${user?.data.age !== undefined &&
+                                                                user?.data.age !== null &&
+                                                                movieDetails?.ageRating.minAge !== undefined &&
+                                                                user.data.age < movieDetails.ageRating.minAge
+                                                                ? "bg-gray-500 opacity-50 cursor-not-allowed"
+                                                                : "bg-[#1E2031]"
+                                                            }`}
                                                     >
                                                         <h3 className="pb-2">
                                                             Hall {hall.name}
                                                         </h3>
-                                                        
+
                                                         <div className="flex gap-4 ">
 
                                                             {hallSessions.map((session) => (
@@ -104,7 +113,7 @@ const MovieDetailSessions = ({ name, movieDetails }: TMovieDetailSessions) => {
                                                                                 before:-bottom-3 before:w-6 before:h-6
                                                                                 before:rounded-full before:bg-[#1E2031]
                                                                                 w-40 "
-                                                                                
+
                                                                             >
                                                                                 <p className="font-extrabold">
                                                                                     {session.time}
@@ -124,7 +133,7 @@ const MovieDetailSessions = ({ name, movieDetails }: TMovieDetailSessions) => {
 
                                                                             </div>
 
-                                                                    
+
                                                                             <div className="w-px h-17 self-center border-l border-dashed border-[#A9A9A9]" />
 
                                                                             <div

@@ -16,7 +16,7 @@ const SignUpModal = ({ setIsModalOpen }: {
 
 
 
-    return (<div className="bg-[#070C1C] rounded-3xl w-120 h-140 p-8 text-white">
+    return (<div className="bg-[#070C1C] rounded-3xl w-120  p-8 text-white">
         <ModalHeader name="Sign Up" setIsModalOpen={setIsModalOpen} />
         <Avatar avatar={avatar} setAvatar={setAvatar}/>
         <AuthForm userName={userName} setUserName={setUserName} email={email} setEmail={setEmail}

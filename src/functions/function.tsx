@@ -93,7 +93,6 @@ export const Logout = async () => {
   }
 }
 
-
 export const GetUser = async () => {
     const token = localStorage.getItem("token");
 
@@ -118,6 +117,56 @@ export const GetUser = async () => {
     return result;
     
 };
+
+export const GetOrders = async (filter?: "upcoming" | "past") => {
+    const token = localStorage.getItem("token")
+
+    const url = filter
+        ? `https://api.kinoxii.redberryinternship.ge/api/orders?filter=${filter}`
+        : "https://api.kinoxii.redberryinternship.ge/api/orders"
+
+    const response = await fetch(url, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+        },
+    })
+
+    const result = await response.json()
+
+    if (!response.ok) {
+        throw {
+            status: response.status,
+            ...result,
+        }
+    }
+
+    return result
+}
+
+export const SearchMovies = async (query: string) => {
+    try {
+        const response = await fetch(
+            `https://api.kinoxii.redberryinternship.ge/api/search?q=${encodeURIComponent(query)}`,
+            {
+                headers: {
+                    Accept: "*/*",
+                },
+            }
+        )
+
+        if (!response.ok) {
+            throw new Error("Failed to search movies")
+        }
+
+        const result = await response.json()
+
+        return result.data
+    } catch (error) {
+        console.error("Search error:", error)
+        throw error
+    }
+}
 
 
 

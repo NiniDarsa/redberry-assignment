@@ -11,7 +11,7 @@ const LoginModal = ({setIsModalOpen}:{ setIsModalOpen:React.Dispatch<React.SetSt
     
 
     return (
-        <div className="bg-[#070C1C] rounded-3xl w-101 h-105 p-8 text-white">
+        <div className="bg-[#070C1C] rounded-3xl w-101  p-8 text-white">
             <ModalHeader name="Log in" setIsModalOpen={setIsModalOpen}/>
             <AuthForm email={email} setEmail={setEmail}
                 password={password} setPassword={setPassword}

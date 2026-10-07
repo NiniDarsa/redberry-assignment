@@ -9,7 +9,8 @@ type AuthContextProviderProps = {
 type TAuthContext = {
     user: TUserResponse | null;
     setUser: React.Dispatch<React.SetStateAction<TUserResponse | null>>;
-    fetchUser: () => Promise<void>
+    fetchUser: () => Promise<void>;
+   
 };
 
 export const AuthContext = createContext<TAuthContext | null>(null);
@@ -17,6 +18,8 @@ export const AuthContext = createContext<TAuthContext | null>(null);
 const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
     const [user, setUser] = useState<TUserResponse|null>(null);
+
+
 
     const fetchUser=async()=>{
        const user= await GetUser()
@@ -54,7 +57,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
             value={{
                 user,
                 setUser,
-                fetchUser
+                fetchUser,
             }}
         >
             {children}

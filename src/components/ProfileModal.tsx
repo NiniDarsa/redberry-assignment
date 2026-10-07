@@ -3,13 +3,15 @@ import Person from "./Person"
 import { Logout } from "../functions/function"
 import useAppContext from "../hooks/useAppContext"
 import useAuthContext from "../hooks/useAuthContext"
+import { useNavigate } from "react-router-dom"
 
 
 const ProfileModal = () => {
-    const[logoutError, setLogoutError]=useState("")
-    const {ProfileModalOpen, isProfileModalOpen}=useAppContext()
-    const {user}=useAuthContext()
-    const{setUser}=useAuthContext()
+    const [logoutError, setLogoutError] = useState("")
+    const { ProfileModalOpen, isProfileModalOpen,setIsAuthModalOpen, setIsProfileModalOpen} = useAppContext()
+  
+    const { user,setUser} = useAuthContext()
+    console.error(user?.data.profileComplete)
 
     const element = useRef(null)
 
@@ -20,55 +22,84 @@ const ProfileModal = () => {
     }
 
 
-     const logoutButtonClick = async () => {
-            try {
-                setLogoutError("")
-                await Logout()
-                localStorage.removeItem("token")
-                setUser(null)
-                ProfileModalOpen(false)
-            } catch (err: any) {
-                if (err.status === 401) {
-                    localStorage.removeItem("token")
-                    ProfileModalOpen(false)
-                }
-            }
+    
+    const logoutButtonClick = async () => {
+    try {
+        setLogoutError("")
+
+        await Logout()
+
+        localStorage.removeItem("token")
+        setUser(null)
+        ProfileModalOpen(false)
+
+    } catch (err: any) {
+        if (err.status === 401) {
+            localStorage.removeItem("token")
+            setUser(null)
+            ProfileModalOpen(false)
         }
+    }
+}
+
+const navigate=useNavigate()
+
+//protected
+//ხელმისაწვდომობა: მხოლოდ ავტორიზებული მომხმარებლებისთვის. არაავტორიზებული მომხმარებლის მიერ დაჭერისას იხსნება ავტორიზაციის მოდალი.
+    const handleProfileClick = () => {
+    const token = localStorage.getItem("token")
+    setIsProfileModalOpen(false)
+
+    if (!token) {
+        setIsAuthModalOpen("Log In")
+        return
+    }
+    
+    navigate("/profile/personalinfo")
+}
 
 
-    return (<>{isProfileModalOpen&&
+    return (<>{isProfileModalOpen &&
         <div
             ref={element}
             onClick={(e) => HideModal(e)}
             className="fixed inset-0 z-50 bg-[#1E2031]/50 flex items-start justify-end pt-20 pr-10">
             <div className="w-75  bg-[#070C1C] rounded-3xl p-8 text-white flex flex-col gap-4">
                 <div className="flex items-center gap-4">
-                    <Person/>
+                    <Person />
                     <div className="text-white">
                         <h3>{user?.data.fullName}</h3>
                         <p>{user?.data.email}</p>
 
                     </div>
                 </div>
-                <div 
-className={`rounded-2xl p-2 flex flex-col justify-center items-start ${
-        user?.data.profileComplete
-            ? "bg-[#22C55E1A] text-[#22C55E]"
-            : "bg-[#E27E041A] text-[#E27E04]"
-    }`}                >
-                    <h3 className="text-[#E27E04]">{user?.data.profileComplete?"Profile Complete":"Profile Incomplete"}</h3>
-                    <p>{!user?.data.profileComplete&&" Please Complete your profile to enable booking"}
-                       </p>
+                <div
+                    className={`rounded-2xl p-2 flex flex-col justify-center items-start ${user?.data.profileComplete
+                            ? "bg-[#22C55E1A] text-[#22C55E]"
+                            : "bg-[#E27E041A] text-[#E27E04]"
+                        }`}                >
+                    <h3 >{user?.data.profileComplete ? "Profile Complete" : "Profile Incomplete"}</h3>
+                    <p>{!user?.data.profileComplete && " Please Complete your profile to enable booking"}
+                    </p>
                 </div>
                 <div className="flex flex-col justify-between items-start gap-3 ">
-                    <button className="cursor-pointer flex items-center gap-2">
+
+
+                    <button 
+                    onClick={handleProfileClick}
+                    className="cursor-pointer flex items-center gap-2">
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M5.68421 0C5.05964 0 4.44909 0.185207 3.92978 0.532201C3.41047 0.879195 3.00571 1.37239 2.7667 1.94942C2.52768 2.52645 2.46515 3.1614 2.58699 3.77397C2.70884 4.38654 3.0096 4.94922 3.45124 5.39086C3.89288 5.8325 4.45556 6.13326 5.06814 6.25511C5.68071 6.37696 6.31565 6.31442 6.89268 6.07541C7.46971 5.8364 7.96291 5.43164 8.30991 4.91233C8.6569 4.39301 8.84211 3.78247 8.84211 3.15789C8.84211 2.32037 8.5094 1.51715 7.91718 0.924926C7.32496 0.332706 6.52174 0 5.68421 0ZM5.68421 5.05263C5.30947 5.05263 4.94314 4.94151 4.63155 4.73331C4.31996 4.52511 4.07711 4.2292 3.9337 3.88298C3.79029 3.53676 3.75277 3.15579 3.82588 2.78825C3.89899 2.42071 4.07945 2.0831 4.34443 1.81811C4.60941 1.55313 4.94702 1.37267 5.31457 1.29956C5.68211 1.22646 6.06308 1.26398 6.4093 1.40739C6.75551 1.55079 7.05143 1.79365 7.25963 2.10524C7.46782 2.41682 7.57895 2.78315 7.57895 3.15789C7.57895 3.66041 7.37932 4.14234 7.02399 4.49768C6.66866 4.85301 6.18673 5.05263 5.68421 5.05263ZM11.3684 12V11.3684C11.3684 10.1959 10.9026 9.07137 10.0735 8.24226C9.24442 7.41316 8.1199 6.94737 6.94737 6.94737H4.42105C3.24852 6.94737 2.124 7.41316 1.2949 8.24226C0.465788 9.07137 0 10.1959 0 11.3684V12H1.26316V11.3684C1.26316 10.5309 1.59586 9.72767 2.18808 9.13545C2.7803 8.54323 3.58353 8.21053 4.42105 8.21053H6.94737C7.78489 8.21053 8.58812 8.54323 9.18034 9.13545C9.77256 9.72767 10.1053 10.5309 10.1053 11.3684V12H11.3684Z" fill="white" />
                         </svg>
 
                         My Profile
                     </button>
-                    <button className="cursor-pointer flex items-center gap-2">
+
+
+
+                    <button 
+                    onClick={() => navigate("/profile/tickets")}
+                    className="cursor-pointer flex items-center gap-2">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M7.93907 0.586073C8.1248 0.40027 8.34531 0.252879 8.58802 0.152318C8.83072 0.0517584 9.09086 0 9.35357 0C9.61628 0 9.87642 0.0517584 10.1191 0.152318C10.3618 0.252879 10.5823 0.40027 10.7681 0.586073L11.4981 1.31707C11.7981 1.61707 11.7661 2.06007 11.5541 2.33707C11.3374 2.62593 11.2323 2.98324 11.2578 3.34341C11.2834 3.70357 11.4381 4.04242 11.6934 4.29773C11.9487 4.55305 12.2876 4.7077 12.6477 4.7333C13.0079 4.7589 13.3652 4.65372 13.6541 4.43707L13.7661 4.36707C13.9109 4.28799 14.0774 4.25754 14.2409 4.28023C14.4043 4.30292 14.5562 4.37753 14.6741 4.49307L15.4141 5.23307C16.1941 6.01407 16.1941 7.28207 15.4141 8.06307L13.5961 9.88007L12.2371 8.52107C12.1428 8.42999 12.0165 8.3796 11.8854 8.38074C11.7543 8.38188 11.6289 8.43446 11.5362 8.52716C11.4435 8.61987 11.3909 8.74527 11.3897 8.87637C11.3886 9.00747 11.439 9.13377 11.5301 9.22807L12.8891 10.5871L8.06107 15.4151C7.87534 15.6009 7.65483 15.7483 7.41213 15.8488C7.16942 15.9494 6.90929 16.0011 6.64657 16.0011C6.38386 16.0011 6.12372 15.9494 5.88102 15.8488C5.63831 15.7483 5.4178 15.6009 5.23207 15.4151L4.49207 14.6751C4.19207 14.3751 4.22407 13.9331 4.43607 13.6551L4.50607 13.5581C4.69619 13.2614 4.7758 12.9073 4.73096 12.5578C4.68611 12.2083 4.51968 11.8858 4.26083 11.6468C4.00198 11.4077 3.66724 11.2674 3.3153 11.2505C2.96336 11.2335 2.61669 11.341 2.33607 11.5541C2.05807 11.7661 1.61507 11.7981 1.31407 11.4981L0.586073 10.7681C0.40027 10.5823 0.252879 10.3618 0.152318 10.1191C0.0517584 9.87642 0 9.61628 0 9.35357C0 9.09086 0.0517584 8.83072 0.152318 8.58802C0.252879 8.34531 0.40027 8.1248 0.586073 7.93907L5.41307 3.11107L6.76307 4.46107C6.85737 4.55215 6.98368 4.60255 7.11477 4.60141C7.24587 4.60027 7.37128 4.54769 7.46398 4.45498C7.55669 4.36228 7.60927 4.23687 7.61041 4.10577C7.61155 3.97468 7.56115 3.84837 7.47007 3.75407L6.12007 2.40407L7.93907 0.586073ZM9.23707 5.52207C9.14277 5.43099 9.01647 5.3806 8.88537 5.38174C8.75427 5.38287 8.62887 5.43546 8.53616 5.52816C8.44346 5.62087 8.39088 5.74627 8.38974 5.87737C8.3886 6.00847 8.43899 6.13477 8.53007 6.22907L9.76307 7.46207C9.85737 7.55315 9.98368 7.60355 10.1148 7.60241C10.2459 7.60127 10.3713 7.54869 10.464 7.45598C10.5567 7.36328 10.6093 7.23787 10.6104 7.10677C10.6115 6.97568 10.5612 6.84937 10.4701 6.75507L9.23707 5.52207Z" fill="white" />
                         </svg>
@@ -76,16 +107,17 @@ className={`rounded-2xl p-2 flex flex-col justify-center items-start ${
                         My Tickets</button>
                 </div>
 
-                <button 
-                onClick={logoutButtonClick}
-                className="text-[#EC3013] text-start cursor-pointer flex items-center gap-2">
+                <button
+                    
+                    onClick={logoutButtonClick}
+                    className="text-[#EC3013] text-start cursor-pointer flex items-center gap-2">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M11.9355 2.31299C12.898 2.31299 13.6855 3.09611 13.6855 4.06299V11.938C13.6855 12.9005 12.9024 13.688 11.9355 13.688H9.74805C9.63201 13.688 9.52073 13.6419 9.43869 13.5598C9.35664 13.4778 9.31055 13.3665 9.31055 13.2505C9.31055 13.1345 9.35664 13.0232 9.43869 12.9411C9.52073 12.8591 9.63201 12.813 9.74805 12.813H11.9355C12.1676 12.813 12.3902 12.7208 12.5543 12.5567C12.7184 12.3926 12.8105 12.1701 12.8105 11.938V4.06299C12.8105 3.83092 12.7184 3.60836 12.5543 3.44427C12.3902 3.28018 12.1676 3.18799 11.9355 3.18799H9.74805C9.63201 3.18799 9.52073 3.14189 9.43869 3.05985C9.35664 2.9778 9.31055 2.86652 9.31055 2.75049C9.31055 2.63446 9.35664 2.52318 9.43869 2.44113C9.52073 2.35908 9.63201 2.31299 9.74805 2.31299H11.9355Z" fill="#EC3013" />
                         <path d="M5.06657 5.0691C5.14908 4.98941 5.2596 4.94531 5.37431 4.94631C5.48902 4.9473 5.59875 4.99331 5.67987 5.07443C5.76098 5.15555 5.80699 5.26528 5.80799 5.37999C5.80899 5.4947 5.76489 5.60521 5.6852 5.68773L3.80395 7.56897H9.7452C9.86123 7.56897 9.97251 7.61507 10.0546 7.69712C10.1366 7.77916 10.1827 7.89044 10.1827 8.00647C10.1827 8.12251 10.1366 8.23379 10.0546 8.31583C9.97251 8.39788 9.86123 8.44397 9.7452 8.44397H3.80395L5.6852 10.3252C5.76489 10.4077 5.80899 10.5183 5.80799 10.633C5.80699 10.7477 5.76098 10.8574 5.67987 10.9385C5.59875 11.0196 5.48902 11.0656 5.37431 11.0666C5.2596 11.0676 5.14908 11.0235 5.06657 10.9439L2.44157 8.31885C2.35955 8.23681 2.31348 8.12555 2.31348 8.00954C2.31348 7.89353 2.35955 7.78227 2.44157 7.70023L5.06657 5.07523V5.0691Z" fill="#EC3013" />
                     </svg>
 
                     Log out</button>
-                {logoutError&&<p>{logoutError}</p>}
+                {logoutError && <p>{logoutError}</p>}
 
             </div>
 
