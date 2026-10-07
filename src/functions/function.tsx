@@ -144,6 +144,30 @@ export const GetOrders = async (filter?: "upcoming" | "past") => {
     return result
 }
 
+export const SearchMovies = async (query: string) => {
+    try {
+        const response = await fetch(
+            `https://api.kinoxii.redberryinternship.ge/api/search?q=${encodeURIComponent(query)}`,
+            {
+                headers: {
+                    Accept: "*/*",
+                },
+            }
+        )
+
+        if (!response.ok) {
+            throw new Error("Failed to search movies")
+        }
+
+        const result = await response.json()
+
+        return result.data
+    } catch (error) {
+        console.error("Search error:", error)
+        throw error
+    }
+}
+
 
 
 

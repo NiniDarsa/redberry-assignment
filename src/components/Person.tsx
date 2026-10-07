@@ -3,7 +3,14 @@ import useAuthContext from "../hooks/useAuthContext"
 const Person=()=>{
     const {user}=useAuthContext()
     console.warn("This", user)
-    return(<div className="relative bg-[#1E2031] text-white w-10 h-10 rounded-xl flex justify-center items-center">
+
+    
+    return(
+    <>{
+        user?.data.avatar?<img 
+        className="w-10 h-10 rounded-2xl"
+        src={user.data.avatar} alt={user.data.avatar}/>:
+        <div className="relative bg-[#1E2031] text-white w-10 h-10 rounded-xl flex justify-center items-center">
                     <h3>{user?.data.username?.split(" ").map((name) => name.charAt(0).toUpperCase()) .join("")}</h3>
                     {!user?.data.profileComplete&&
                     <svg className="absolute -bottom-0.5 right-0" 
@@ -11,6 +18,9 @@ const Person=()=>{
                         <circle cx="5" cy="5" r="4.5" fill="#E27E04" stroke="#070C1C" />
                     </svg>}
 
-                </div>)
+                </div>
+    }</>
+    
+    )
 }
 export default Person

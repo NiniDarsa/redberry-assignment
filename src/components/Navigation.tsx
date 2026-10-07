@@ -4,12 +4,12 @@ import Person from "./Person"
 import useAppContext from "../hooks/useAppContext"
 import useAuthContext from "../hooks/useAuthContext"
 import { useNavigate } from "react-router-dom"
+import Search from "./Search"
 
 
 
 
 const Navigation = () => {
-    const { search, setSearch } = useSessionsContext()
     const {user}=useAuthContext()
     const{AuthModalOpen:ModalOpen, ProfileModalOpen,isProfileModalOpen  }=useAppContext()
    
@@ -26,28 +26,7 @@ const Navigation = () => {
         </div>
 
         <div className="flex flex-2 justify-between items-baseline gap-3">
-            <div className="relative w-[24vw] flex-3  h-full ">
-                <input
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    type="text"
-                    placeholder="search films and live events" className="bg-[#FFFFFF]/10 rounded-full w-full px-10 py-2   "></input>
-                <svg
-                    className="absolute left-4 top-1/2 -translate-y-1/2 "
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <path
-                        d="M9.21867 9.21867L12.25 12.25M10.5 6.125C10.5 8.54125 8.54125 10.5 6.125 10.5C3.70875 10.5 1.75 8.54125 1.75 6.125C1.75 3.70875 3.70875 1.75 6.125 1.75C8.54125 1.75 10.5 3.70875 10.5 6.125Z"
-                        stroke="white"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    />
-                </svg>
-            </div>
+            <Search/>
 
            {user?
            <div className="flex flex-1 gap-2 justify-between items-center">
