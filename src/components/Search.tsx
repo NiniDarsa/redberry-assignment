@@ -3,6 +3,7 @@ import useSessionsContext from "../hooks/useSessionsContext"
 import { useEffect, useRef, useState } from "react"
 import { SearchMovies } from "../functions/function"
 import type { TSearchMovie } from "../types/searchMovies"
+import useOnClickOutside from "../hooks/useClickOutside"
 
 const Search = () => {
     const { search, setSearch } = useSessionsContext()
@@ -12,25 +13,7 @@ const Search = () => {
     const isSessionsPage = location.pathname === "/sessions"
     const [searchResult, setSearchResult] = useState<TSearchMovie[]>()
 
-    const [isSearchOpen, setIsSearchOpen] = useState(false) 
-    const searchRef=useRef<HTMLDivElement>(null)
-   
-     useEffect(() => {
-        const onClick = (e: MouseEvent) => {
-            if (
-                searchRef.current &&
-                !searchRef.current.contains(e.target as Node)
-            ) {
-                setIsSearchOpen(false)
-            }
-        }
-
-        window.addEventListener("click", onClick)
-
-        return () => {
-            window.removeEventListener("click", onClick)
-        }
-    }, [])
+    const {isOpen:isSearchOpen,setIsOpen:setIsSearchOpen,ref:searchRef}=useOnClickOutside()
 
     const navigate = useNavigate()
 

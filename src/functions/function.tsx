@@ -168,6 +168,37 @@ export const SearchMovies = async (query: string) => {
     }
 }
 
+export const GetSeatMap = async (sessionId: number) => {
+    const token = localStorage.getItem("token")
+
+    const response = await fetch(
+        `https://api.kinoxii.redberryinternship.ge/api/sessions/${sessionId}/seats`,
+        {
+            headers: {
+                Accept: "*/*",
+                ...(token
+                    ? {
+                          Authorization: `Bearer ${token}`,
+                      }
+                    : {}),
+            },
+        }
+    )
+
+    const result = await response.json()
+
+    if (!response.ok) {
+        throw {
+            status: response.status,
+            message: result.message,
+        }
+    }
+
+    return result.data
+}
+
+
+
 
 
 
