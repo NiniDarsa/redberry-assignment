@@ -8,6 +8,7 @@ import { useMovieSessions } from "../hooks/useMovieSessions";
 import useSessionsContext from "../hooks/useSessionsContext";
 import { useState } from "react";
 import type { TSession } from "../types/sessionDetail";
+import TicketContextProvider from "../context/TicketContextProvider";
 
 const MovieDetailsPage = () => {
     const { name } = useParams()
@@ -25,10 +26,12 @@ const MovieDetailsPage = () => {
            movieSessions={movieSessions} setClickedSession={setClickedSession}
            />
 
+       <TicketContextProvider>
            <TicketPurchaseModal 
            age={movieDetails?.ageRating.minAge}
            name={movieDetails?.title}
            isModalOpen={isOpen} ref={ref} clickedSession={clickedSession}/>
+        </TicketContextProvider>
         </div>)
 }
 export default MovieDetailsPage
