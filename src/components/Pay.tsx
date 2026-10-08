@@ -134,7 +134,7 @@ const Pay = ({ clickedSession, MovieAge, clickedButton, hanndleButtonClick,name,
 
         <div className="flex flex-col flex-1 min-h-0">
             {clickedButton === "seats" && <MyHoldingTickets getTicketPrice={getTicketPrice} />}
-            {clickedButton==="checkout"&&<TicketSummary holdSeatsdata={HoldSeatsdata} clickedSession={clickedSession} name={name}/>}
+            {clickedButton==="checkout"&&<TicketSummary HoldSeatsdata={HoldSeatsdata} clickedSession={clickedSession} name={name}/>}
         </div>
 
         <div className="flex flex-col gap-2">

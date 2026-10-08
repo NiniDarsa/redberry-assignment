@@ -9,7 +9,6 @@ export const getDateString = (date: Date) => {
 }
 
 
-
 export const Login = async (EmailPasswordObject: { email: string, password: string }) => {
   try {
     const response = await fetch("https://api.kinoxii.redberryinternship.ge/api/login", {
@@ -198,6 +197,8 @@ export const GetSeatMap = async (sessionId: number) => {
 
     return result.data
 }
+
+
 
 export const HoldSeats = async (
     sessionId: number,

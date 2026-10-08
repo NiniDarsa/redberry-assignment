@@ -2,22 +2,21 @@ import type { THold } from "../types/holdSeats"
 import type { TSession } from "../types/sessionDetail"
 
 type TTicketSummary = {
-    holdSeatsdata: THold | undefined
+    HoldSeatsdata: THold | undefined
     clickedSession: TSession | undefined
     name:string|undefined
     
 }
-const TicketSummary = ({ holdSeatsdata, clickedSession,name }: TTicketSummary) => {
+const TicketSummary = ({ HoldSeatsdata, clickedSession,name }: TTicketSummary) => {
+     const ticketCounts = HoldSeatsdata?.seats.reduce(
+        (counts, seat) => {
+            const type = seat.ticketType.name
 
-    const ticketCounts = holdSeatsdata?.seats.reduce(
-         (counts, seat) => {
-             const type = seat.ticketType.name
+            counts[type] = (counts[type] || 0) + 1
 
-             counts[type] = (counts[type] || 0) + 1
-
-             return counts
+            return counts
         },
-         {} as Record<string, number>
+        {} as Record<string, number>
     )
 
     return (
@@ -31,31 +30,33 @@ const TicketSummary = ({ holdSeatsdata, clickedSession,name }: TTicketSummary) =
                                    
                        </p>
                 </div>
-                <div>
-                    <div className="flex justify-between">
-                        <span>seats: </span>
-                        <div className="flex gap-1">
-                            {holdSeatsdata?.seats.map((item) => {
-                                return <span>{item.code}</span>
 
-                            })}
-                        </div>
-                    </div>
-                    <div className="flex justify-between">Tickets:
-                         <span>
-                            {Object.entries(ticketCounts || {}).map(
-                                ([type, count], index, array) => (
-                                     <span key={type}>
-                                         {count}x {type}
-                                         {index < array.length - 1 && ", "}
-                                     </span>
-                                 )
-                            )}
-                        </span>
-                        
-                        
-                        </div>
+                <div>
+            <div className="flex justify-between">
+                <span>seats: </span>
+                <div className="flex gap-1">
+                    {HoldSeatsdata?.seats.map((item) => {
+                        return <span>{item.code}</span>
+
+                    })}
                 </div>
+            </div>
+            <div className="flex justify-between">Tickets:
+                <span>
+                    {Object.entries(ticketCounts || {}).map(
+                        ([type, count], index, array) => (
+                            <span key={type}>
+                                {count}x {type}
+                                {index < array.length - 1 && ", "}
+                            </span>
+                        )
+                    )}
+                </span>
+
+
+            </div>
+        </div>
+                
             </div>
         </div>
     )

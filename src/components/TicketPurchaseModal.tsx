@@ -1,11 +1,10 @@
 import { useState } from "react"
 import type { TSession } from "../types/sessionDetail"
-import SeatsMap from "./SeatsMap"
-import Timer from "./Timer"
-import Checkout from "./Checkout"
-import TicketButtonsContainer from "./TicketButtonsContainer"
-import Pay from "./Pay"
-import type { THold } from "../types/holdSeats"
+
+import TicketBooking from "./TicketBooking"
+import Confirmed from "./Confirmed"
+import type { TMovieDetails } from "../types/movies"
+import type { TOrder } from "../types/completeOrder"
 
 export type TTicketType = "adult" | "student" | "child"
 
@@ -19,16 +18,12 @@ type TTicketPurchaseModal = {
     clickedSession: TSession | undefined
     name: string | undefined
     MovieAge: number | undefined
+    movieDetails: TMovieDetails | undefined
 }
 
-const TicketPurchaseModal = ({ isModalOpen, ref: modalRef, clickedSession, name, MovieAge }: TTicketPurchaseModal) => {
-
-    const [clickedButton, setClickedButton] = useState<"seats"|"checkout">("seats")
-    const hanndleButtonClick = (name: "seats" | "checkout") => {
-        setClickedButton(name)
-    }
-    
-    const [HoldSeatsdata,setHoldSeatsData]=useState<THold>()
+const TicketPurchaseModal = ({ isModalOpen, ref: modalRef, clickedSession, name, MovieAge, movieDetails }: TTicketPurchaseModal) => {
+    const [confirmed, setConfirmed] = useState(false) 
+    const [order,setOrder]=useState<TOrder|undefined>()
 
 
     return (
@@ -36,40 +31,13 @@ const TicketPurchaseModal = ({ isModalOpen, ref: modalRef, clickedSession, name,
             {isModalOpen &&
                 <div className="w-full h-full fixed inset-0 z-50 bg-[#1E2031]/50 flex items-center justify-center">
                     <div ref={modalRef} className="rounded-2xl w-285 h-[680px] text-white bg-[#070C1c] p-10 flex flex-col " >
-                        <div className="flex justify-between items-center mb-10">
-                            <div>
-                                <h2 className="font-extrabold"> {name}</h2>
-                                <p className="text-[#A9A9A9] text-[12px]">
-                                    {clickedSession?.venue.name} . Hall {clickedSession?.hall.name} . {clickedSession?.date} . {clickedSession?.time}
-                                    . {clickedSession?.format.name} . {clickedSession?.language.name}
-                                </p>
-                            </div>
-                            <Timer clickedSession={clickedSession} />
+                        {!confirmed ? <TicketBooking clickedSession={clickedSession} name={name} MovieAge={MovieAge} isModalOpen={isModalOpen} isConfirmed={() => setConfirmed(true)} 
+                          setOrder={setOrder}
+                            />
+                            : <Confirmed  order={order}/>
 
-                        </div>
-
-                        <div className="flex gap-2 flex-1 min-h-0 overflow-hidden" >
-
-                            <div className="flex-4 flex flex-col gap-5 min-h-0 overflow-scroll">
-                                <TicketButtonsContainer clickedButton={clickedButton} hanndleButtonClick={hanndleButtonClick}/>
-
-                                <div className="flex flex-col gap-2">
-                                    {clickedButton === "seats" ? 
-                                    <SeatsMap isModalOpen={isModalOpen} clickedSession={clickedSession}/>
-                                     : <Checkout HoldSeatsData={HoldSeatsdata}/>
-                                    }
-                                </div>
-
-                            </div>
-               
-                              <Pay clickedSession={clickedSession} MovieAge={MovieAge} clickedButton={clickedButton}
-                              hanndleButtonClick={hanndleButtonClick} name={name} HoldSeatsdata={HoldSeatsdata} setHoldSeatsData={setHoldSeatsData}
-                              />
-
-                        </div>
-
+                        }
                     </div>
-
                 </div>
             }
         </>
