@@ -1,3 +1,5 @@
+import type { TCompleteOrderData, TCompleteOrderResponse } from "../types/completeOrder"
+
 //"2026-10-3"
 export const getDateString = (date: Date) => {
   const year = date.getFullYear()
@@ -236,6 +238,38 @@ export const HoldSeats = async (
     }
 
     return result
+}
+
+export const CompleteOrder = async (data: TCompleteOrderData) => {
+    const token = localStorage.getItem("token")
+
+    const response = await fetch(
+        "https://api.kinoxii.redberryinternship.ge/api/orders",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "*/*",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                holdId: data.holdId,
+                fullName: data.fullName,
+                email: data.email,
+                mobileNumber: data.mobileNumber.replace(/\s/g, ""),
+                cardNumber: data.cardNumber.replace(/\s/g, ""),
+                expiry: data.expiry,
+                cvv: data.cvv,
+            }),
+        }
+    )
+
+    const result: TCompleteOrderResponse = await response.json()
+
+    return {
+        status: response.status,
+        data: result,
+    }
 }
 
 

@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import type { TSeat, TSeatMap, TSeatRow } from "../types/seatMap"
 import type { TSession } from "../types/sessionDetail"
 import { GetSeatMap } from "../functions/function"
-import type { TselectedSeat } from "./TicketPurchaseModal"
 import useTicketContext from "../hooks/useTicketContext"
 
 type TTicketType = "adult" | "student" | "child"

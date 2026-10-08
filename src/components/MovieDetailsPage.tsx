@@ -28,7 +28,7 @@ const MovieDetailsPage = () => {
 
        <TicketContextProvider>
            <TicketPurchaseModal 
-           age={movieDetails?.ageRating.minAge}
+           MovieAge={movieDetails?.ageRating.minAge}
            name={movieDetails?.title}
            isModalOpen={isOpen} ref={ref} clickedSession={clickedSession}/>
         </TicketContextProvider>

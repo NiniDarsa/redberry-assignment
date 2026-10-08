@@ -1,8 +1,11 @@
 import { useState } from "react"
 import type { TSession } from "../types/sessionDetail"
 import SeatsMap from "./SeatsMap"
-import SelectedTickets from "./SelectedTickets"
 import Timer from "./Timer"
+import Checkout from "./Checkout"
+import TicketButtonsContainer from "./TicketButtonsContainer"
+import Pay from "./Pay"
+import type { THold } from "../types/holdSeats"
 
 export type TTicketType = "adult" | "student" | "child"
 
@@ -15,15 +18,18 @@ type TTicketPurchaseModal = {
     ref: React.RefObject<HTMLDivElement | null>
     clickedSession: TSession | undefined
     name: string | undefined
-    age: number | undefined
+    MovieAge: number | undefined
 }
 
-const TicketPurchaseModal = ({ isModalOpen, ref: modalRef, clickedSession, name, age }: TTicketPurchaseModal) => {
+const TicketPurchaseModal = ({ isModalOpen, ref: modalRef, clickedSession, name, MovieAge }: TTicketPurchaseModal) => {
 
-    const [clickedButton, setClickedButton] = useState("seats")
+    const [clickedButton, setClickedButton] = useState<"seats"|"checkout">("seats")
     const hanndleButtonClick = (name: "seats" | "checkout") => {
         setClickedButton(name)
     }
+    
+    const [HoldSeatsdata,setHoldSeatsData]=useState<THold>()
+
 
     return (
         <>
@@ -38,8 +44,6 @@ const TicketPurchaseModal = ({ isModalOpen, ref: modalRef, clickedSession, name,
                                     . {clickedSession?.format.name} . {clickedSession?.language.name}
                                 </p>
                             </div>
-
-                            {/*TIMER */}
                             <Timer clickedSession={clickedSession} />
 
                         </div>
@@ -47,28 +51,20 @@ const TicketPurchaseModal = ({ isModalOpen, ref: modalRef, clickedSession, name,
                         <div className="flex gap-2 flex-1 min-h-0 overflow-hidden" >
 
                             <div className="flex-4 flex flex-col gap-5 min-h-0 overflow-scroll">
-                                <div className="flex bg-[#2A2C3D] rounded-2xl justify-around ">
-                                    <button className={`cursor-pointer flex-1  overflow-hidden rounded-2xl py-1 ${clickedButton === "seats" ? "bg-[#EC3013]" : ""}`} onClick={() => hanndleButtonClick("seats")}> SEATS </button>
-                                    <button className={`cursor-pointer flex-1 overflow-hidden rounded-2xl py-1 ${clickedButton === "checkout" ? "bg-[#EC3013]" : ""}`} onClick={() => hanndleButtonClick("checkout")}> CHECKOUT </button>
-                                </div>
+                                <TicketButtonsContainer clickedButton={clickedButton} hanndleButtonClick={hanndleButtonClick}/>
 
                                 <div className="flex flex-col gap-2">
-                                    {clickedButton === "seats" ? <SeatsMap isModalOpen={isModalOpen} clickedSession={clickedSession}
-                                    /> : <>LaLa</>
+                                    {clickedButton === "seats" ? 
+                                    <SeatsMap isModalOpen={isModalOpen} clickedSession={clickedSession}/>
+                                     : <Checkout HoldSeatsData={HoldSeatsdata}/>
                                     }
-
                                 </div>
 
                             </div>
-
-                            <div className="flex flex-2 flex-col  gap-2 border-l border-[#2A2C3D] p-2 min-h-0 overflow-hidden">
-                                {clickedButton === "seats" ? <SelectedTickets clickedSession={clickedSession}
-
-
-
-                                /> : <></>}
-
-                            </div>
+               
+                              <Pay clickedSession={clickedSession} MovieAge={MovieAge} clickedButton={clickedButton}
+                              hanndleButtonClick={hanndleButtonClick} name={name} HoldSeatsdata={HoldSeatsdata} setHoldSeatsData={setHoldSeatsData}
+                              />
 
                         </div>
 
