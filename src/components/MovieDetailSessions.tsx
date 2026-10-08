@@ -20,8 +20,6 @@ const MovieDetailSessions = ({  movieDetails,  setIsOpen, movieSessions, setClic
     const { user } = useAuthContext()
     const { setIsAuthModalOpen } = useAppContext()
 
-    console.warn("ESA", movieSessions)
-
     function handleDateChange(date: string) {
         setDatePeriod(date, false)
     }
@@ -29,6 +27,16 @@ const MovieDetailSessions = ({  movieDetails,  setIsOpen, movieSessions, setClic
 
     const handleSessionClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>,session:TSession) => {
         e.stopPropagation()
+        const isAgeRestricted =
+        user?.data.age !== undefined &&
+        user?.data.age !== null &&
+        movieDetails?.ageRating.minAge !== undefined &&
+        user.data.age < movieDetails.ageRating.minAge
+
+     if (isAgeRestricted) {
+         return
+    }
+
         setClickedSession(session)
         if (user) {
             setIsOpen(true)
@@ -113,7 +121,7 @@ const MovieDetailSessions = ({  movieDetails,  setIsOpen, movieSessions, setClic
 
                                                                 <div
 
-                                                                 onClick={(e) => handleSessionClick(e,session)}
+                                                                   onClick={(e) => handleSessionClick(e,session)}
                     
                                                                     key={session.id}
                                                                     className="flex shrink-0 cursor-pointer"

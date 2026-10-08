@@ -119,31 +119,31 @@ export const GetUser = async () => {
     
 };
 
-export const GetOrders = async (filter?: "upcoming" | "past") => {
+
+export const GetOrders = async (
+    filter?: "upcoming" | "past"
+) => {
     const token = localStorage.getItem("token")
 
     const url = filter
-        ? `https://api.kinoxii.redberryinternship.ge/api/orders?filter=${filter}`
-        : "https://api.kinoxii.redberryinternship.ge/api/orders"
+        ? `https://api.kinoxii.redberryinternship.ge/api/tickets?filter=${filter}`
+        : "https://api.kinoxii.redberryinternship.ge/api/tickets"
 
     const response = await fetch(url, {
         headers: {
+            Accept: "*/*",
             Authorization: `Bearer ${token}`,
-            Accept: "application/json",
         },
     })
 
     const result = await response.json()
 
-    if (!response.ok) {
-        throw {
-            status: response.status,
-            ...result,
-        }
+    return {
+        status: response.status,
+        data: result.data,
     }
-
-    return result
 }
+
 
 export const SearchMovies = async (query: string) => {
     try {
@@ -197,7 +197,6 @@ export const GetSeatMap = async (sessionId: number) => {
 
     return result.data
 }
-
 
 
 export const HoldSeats = async (
