@@ -273,6 +273,31 @@ export const CompleteOrder = async (data: TCompleteOrderData) => {
 }
 
 
+export const RefundOrder = async (reference: string) => {
+    const token = localStorage.getItem("token")
+
+    const response = await fetch(
+        `https://api.kinoxii.redberryinternship.ge/api/orders/${reference}/refund`,
+        {
+            method: "POST",
+            headers: {
+                Accept: "*/*",
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    )
+
+    const result = await response.json()
+
+    return {
+        status: response.status,
+        data: result.data,
+        message: result.message,
+    }
+}
+
+
+
 
 
 

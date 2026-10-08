@@ -1,67 +1,145 @@
 import { useEffect, useState } from "react"
 import type { TOrder } from "../types/orders"
 import useAppContext from "../hooks/useAppContext"
-import { GetOrders } from "../functions/function"
+import { GetOrders, RefundOrder } from "../functions/function"
 
 const MyTickets = () => {
     const [filter, setFilter] = useState<"upcoming" | "past">("upcoming")
     const [Myorders, setMyOrders] = useState<TOrder[]>([])
-    const {setIsAuthModalOpen}=useAppContext()
+    const { setIsAuthModalOpen } = useAppContext()
     const [isLoading, setIsLoading] = useState(false)
-    const [error,setError]=useState("")
+    const [error, setError] = useState("")
+    const [refundError, setRefundError] = useState("")
+    const [refundingOrderId, setRefundingOrderId] = useState<number | null>(null)
 
-  useEffect(() => {
-    const getOrders = async () => {
+    useEffect(() => {
+        const getOrders = async () => {
+            try {
+                setIsLoading(true)
+                setError("")
+
+                const result = await GetOrders(filter)
+
+                if (result.status === 401) {
+                    setIsAuthModalOpen("Log In")
+                    return
+                }
+
+                setMyOrders(result.data)
+            } catch (err) {
+                console.log(err)
+                setError("Something went wrong. Please try again.")
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        getOrders()
+    }, [filter])
+
+
+    const handleRefund = async (order: TOrder) => {
+        if (!order.isRefundable || refundingOrderId !== null) return
+
+        const confirmed = window.confirm(
+            `Are you sure you want to refund order #${order.reference}? This cannot be undone.`
+        )
+
+        if (!confirmed) return
+
         try {
-            setIsLoading(true)
-            setError("")
+            setRefundError("")
+            setRefundingOrderId(order.id)
 
-            const result = await GetOrders(filter)
+            const result = await RefundOrder(order.reference)
 
-             if (result.status === 401) {
-                 setIsAuthModalOpen("Log In")
-                 return
+            if (result.status === 401) {
+                setIsAuthModalOpen("Log In")
+                return
             }
 
-            setMyOrders(result.data)
+            if (result.status === 422) {
+                setRefundError(result.message || "The refund was refused.")
+                return
+            }
+
+            if (result.status !== 200 || !result.data) {
+                setRefundError(result.message || "Could not refund this order.")
+                return
+            }
+
+            //  Update using the order returned by the API
+            const updatedOrder: TOrder = result.data
+
+            setMyOrders((currentOrders) =>
+                currentOrders.map((currentOrder) =>
+                    currentOrder.id === updatedOrder.id
+                        ? updatedOrder
+                        : currentOrder
+                )
+            )
+
+            //  Refresh the current tab from the server
+            try {
+                const refreshedOrders = await GetOrders(filter)
+
+                if (refreshedOrders.status === 200) {
+                    setMyOrders(refreshedOrders.data)
+                } else if (refreshedOrders.status === 401) {
+                    setIsAuthModalOpen("Log In")
+                }
+            } catch (err) {
+                // Refund succeeded; only the refresh failed
+                console.error("Could not refresh tickets:", err)
+            }
         } catch (err) {
-            console.log(err)
-             setError("Something went wrong. Please try again.")
+            console.error(err)
+            setRefundError("Something went wrong. Please try again.")
         } finally {
-            setIsLoading(false)
+            setRefundingOrderId(null)
         }
     }
 
-    getOrders()
-}, [filter])
 
     return (<div className="text-white flex flex-col gap-3">
         <div className="flex gap-2 bg-[#1E2031] w-fit p-2 px-4 rounded-2xl mb-5">
             <button
-                className={ filter === "upcoming" ? "bg-[#505261] p-2 rounded-xl" : "p-2"}
+                className={filter === "upcoming" ? "bg-[#505261] p-2 rounded-xl" : "p-2"}
                 onClick={() => setFilter("upcoming")}>Upcomming<span className="text-[#EC3013] "> {filter === "upcoming" ? Myorders.length : ""}</span></button>
             <button
                 className={filter === "past" ? "bg-[#505261] p-2 rounded-xl" : "p-2"}
                 onClick={() => setFilter("past")}>Past<span className="text-[#EC3013]">{filter === "past" ? Myorders.length : ""}</span></button>
         </div>
-       
-       
-            {isLoading && (
-                <p className="text-center text-[#A9A9A9] py-10">
-                    Loading tickets...
-                </p>
-            )}
 
-       
-            {error && (
-                <p className="text-center text-[#A9A9A9] py-10">
-                    {error}
-                </p>
-            )}
 
-        {!isLoading && !error &&Myorders.map((item) => {
+        {isLoading && (
+            <p className="text-center text-[#A9A9A9] py-10">
+                Loading tickets...
+            </p>
+        )}
+
+
+        {error && (
+            <p className="text-center text-[#A9A9A9] py-10">
+                {error}
+            </p>
+        )}
+
+        {refundError && (
+            <p className="text-center text-[#EC3013] py-3">
+                {refundError}
+            </p>
+        )}
+
+        {!isLoading && !error && Myorders.length === 0 && (
+            <p className="text-center text-[#A9A9A9] py-10">
+                No {filter} tickets found.
+            </p>
+        )}
+
+        {!isLoading && !error && Myorders.map((item) => {
             return (<div key={item.id}
-            className="bg-[#1E2031] rounded-2xl p-2 flex items-center">
+                className="bg-[#1E2031] rounded-2xl p-2 flex items-center">
                 <div className="flex gap-2 flex-3 p-3 items-center">
                     <img
                         src={item.session.movie.posterUrl}
@@ -114,11 +192,12 @@ const MyTickets = () => {
                         </div>
 
                         <button
-                            disabled={!item.isRefundable}
-                            className={`p-2 rounded-2xl px-4 ${item.isRefundable
-                                ? "bg-[#2A2C3D] text-[white] cursor-pointer"
+                            onClick={() => handleRefund(item)}
+                            disabled={!item.isRefundable || refundingOrderId === item.id}
+                            className={`p-2 rounded-2xl px-4 ${item.isRefundable && refundingOrderId !== item.id
+                                ? "bg-[#2A2C3D] text-white cursor-pointer"
                                 : "bg-[#2A2C3D] text-[#A9A9A9] cursor-not-allowed opacity-50"
-                                }`}>Refund</button>
+                                }`}>{refundingOrderId === item.id ? "Refunding..." : "Refund"}</button>
                         {item.isUpcoming && !item.isRefundable && (
                             <p className="text-center text-[#A9A9A9]">
                                 Refund is no longer available
@@ -126,10 +205,12 @@ const MyTickets = () => {
                         )}
 
                         <p className="text-center">{item.refundedAt}</p>
+
                     </div>
                 </div>
             </div>)
         })}
+
 
     </div>)
 }
