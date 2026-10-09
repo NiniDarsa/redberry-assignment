@@ -155,6 +155,16 @@ const MyTickets = () => {
         )}
 
         {!isLoading && !error && Myorders.reverse().map((item) => {
+
+            // Calculate the session start time
+            const sessionStart = new Date(
+                `${item.session.date}T${item.session.time}`
+            )
+
+            //  Refund deadline is 2 hours before the session
+            const refundDeadline = new Date(
+                sessionStart.getTime() - 2 * 60 * 60 * 1000
+            )
             return (<div key={item.id}
                 className="bg-[#1E2031] rounded-2xl p-2 flex items-center">
                 <div className="flex gap-2 flex-3 p-3 items-center">
@@ -236,10 +246,11 @@ const MyTickets = () => {
                         )}
 
                         <p className="text-center text-[#A9A9A9] text-sm">
-                            Refundable until{" "}
-                            {new Date(
-                                `${item.session.date}T${item.session.time}`
-                            ).toLocaleString("en-GB", {
+                            {item.isRefundable
+                                ? "Refundable until "
+                                : "Refund deadline: "}
+
+                            {refundDeadline.toLocaleString("en-GB", {
                                 weekday: "short",
                                 day: "numeric",
                                 month: "short",

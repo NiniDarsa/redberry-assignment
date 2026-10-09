@@ -14,10 +14,8 @@ const HeroSection = () => {
     const movie = FeaturedMovies[currentMovie]
     const navigate=useNavigate()
 
-
     //fetched Detailed information about each movie
-
-    const [details] = useDetailedMovieInfo(movie?.slug)
+    const details = useDetailedMovieInfo(movie?.slug)
 
 
     //backward and forward buttons

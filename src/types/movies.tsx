@@ -47,7 +47,7 @@ type TFormat = {
     priceUplift: number;
 };
 
-type TGenre = {
+export type TGenre = {
     id: number;
     slug: string;
     name: string;

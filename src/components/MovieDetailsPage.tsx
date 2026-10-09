@@ -9,36 +9,50 @@ import useSessionsContext from "../hooks/useSessionsContext";
 import { useEffect, useState } from "react";
 import type { TSession } from "../types/sessionDetail";
 import TicketContextProvider from "../context/TicketContextProvider";
+import { saveRecentlyViewedMovie } from "../functions/function";
 
 const MovieDetailsPage = () => {
     const { name } = useParams()
-    const [movieDetails, setMovieDetails] = useMovieDetails(name || "")
-   
+    const movieDetails = useMovieDetails(name || "")
+
     const { isOpen, setIsOpen, ref } = useOnClickOutside()
-    const {searchPar}=useSessionsContext()
-    const [movieSessions, setMovieSessions] = useMovieSessions(name || "", searchPar)
+    const { searchPar } = useSessionsContext()
+    const movieSessions = useMovieSessions(name || "", searchPar)
     const location = useLocation()
-    const [clickedSession,setClickedSession]=useState<TSession|undefined>(location.state?.session)
-   
+    const [clickedSession, setClickedSession] = useState<TSession | undefined>(location.state?.session)
+
     useEffect(() => {
-    if (location.state?.openModal) {
-        setIsOpen(true)
-    }
-}, [])
+        if (location.state?.openModal) {
+            setIsOpen(true)
+        }
+    }, [])
+
+    useEffect(() => {
+        if (!movieDetails || !name) return
+
+        saveRecentlyViewedMovie({
+            slug: name,
+            title: movieDetails.title,
+            posterUrl: movieDetails.posterUrl,
+            minutes: movieDetails.runtimeMinutes,
+            age: movieDetails.ageRating.minAge,
+            genres: movieDetails.genres
+        })
+    }, [movieDetails, name])
 
     return (
         <div className="bg-[#070c1c] w-full flex flex-col pb-10">
-           <MovieDetailHeader movieDetails={movieDetails}/>
-           <MovieDetailSessions movieDetails={movieDetails}  setIsOpen={setIsOpen} 
-           movieSessions={movieSessions} setClickedSession={setClickedSession}
-           />
+            <MovieDetailHeader movieDetails={movieDetails} />
+            <MovieDetailSessions movieDetails={movieDetails} setIsOpen={setIsOpen}
+                movieSessions={movieSessions} setClickedSession={setClickedSession}
+            />
 
-       <TicketContextProvider>
-           <TicketPurchaseModal 
-           MovieAge={movieDetails?.ageRating.minAge}
-           name={movieDetails?.title}
-           isModalOpen={isOpen} ref={ref} clickedSession={clickedSession}/>
-        </TicketContextProvider>
+            <TicketContextProvider>
+                <TicketPurchaseModal
+                    MovieAge={movieDetails?.ageRating.minAge}
+                    name={movieDetails?.title}
+                    isModalOpen={isOpen} ref={ref} clickedSession={clickedSession} />
+            </TicketContextProvider>
         </div>)
 }
 export default MovieDetailsPage

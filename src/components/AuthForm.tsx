@@ -1,5 +1,5 @@
-import {  useMemo, useState } from "react"
-import {  Login, Signup } from "../functions/function"
+import { useMemo, useState } from "react"
+import { FieldCheck, Login, Signup } from "../functions/function"
 import useAuthContext from "../hooks/useAuthContext"
 
 type TAuthForm = {
@@ -15,7 +15,7 @@ type TAuthForm = {
     confirmPassword?: string,
     setConfirmPassword?: (name: string) => void
 
-    name: "Sign Up"| "Log In",
+    name: "Sign Up" | "Log In",
 
     setIsModalOpen: React.Dispatch<React.SetStateAction<"" | "Sign Up" | "Log In">>
 
@@ -27,9 +27,9 @@ type TAuthForm = {
 
 const AuthForm = ({ userName, setUserName, email, setEmail, password, setPassword, confirmPassword, setConfirmPassword, name, setIsModalOpen, avatar }: TAuthForm) => {
 
-     const [loginError,setLoginError]=useState("")
-     console.log(loginError)
-     const [signupError, setSignUpError] = useState<{
+    const [loginError, setLoginError] = useState("")
+    console.log(loginError)
+    const [signupError, setSignUpError] = useState<{
         username?: string[]
         email?: string[]
         password?: string[]
@@ -37,9 +37,9 @@ const AuthForm = ({ userName, setUserName, email, setEmail, password, setPasswor
         avatar?: string[]
     }>({})
 
-    const{fetchUser}=useAuthContext()
+    const { fetchUser } = useAuthContext()
 
-    
+
     let isFormFilled = useMemo(() => {
         if (name === "Sign Up") {
             return !!userName && !!email && !!password && !!confirmPassword
@@ -65,9 +65,9 @@ const AuthForm = ({ userName, setUserName, email, setEmail, password, setPasswor
             await fetchUser()
             setIsModalOpen("")
         } catch (err: any) {
-            setPassword("")   
+            setPassword("")
             setLoginError(err.message)
-          
+
         }
     }
 
@@ -80,11 +80,11 @@ const AuthForm = ({ userName, setUserName, email, setEmail, password, setPasswor
             console.log("TOKEN", data.data?.token)
             localStorage.setItem("token", data.data.token)
             await fetchUser()
-            console.log("STORED TOKEN:", localStorage.getItem("token")) 
+            console.log("STORED TOKEN:", localStorage.getItem("token"))
             setIsModalOpen("")
         } catch (err: any) {
             if (err.status === 422) {
-                setSignUpError(err.errors??{})
+                setSignUpError(err.errors ?? {})
             }
         }
     }
@@ -103,13 +103,17 @@ const AuthForm = ({ userName, setUserName, email, setEmail, password, setPasswor
             className="flex flex-col gap-5">
             {name === "Sign Up" && <div className="flex flex-col gap-1">
                 <label htmlFor="username" className="text-[14px]">username</label>
-                <input
-                    className="bg-[#1E2031] p-2 pl-3 rounded-xl"
-                    type="text" id="username" name="username"
-                    
-                    value={userName??""}
-                    onChange={(e) => setUserName && setUserName(e.target.value)}
-                />
+                <div className="relative">
+                    <input
+                        className={`bg-[#1E2031] p-2 pl-3 rounded-xl border ${signupError.username ? "border-[#EC3013]" : "border-transparent"
+                            } w-full`}
+                        type="text" id="username" name="username"
+
+                        value={userName ?? ""}
+                        onChange={(e) => setUserName && setUserName(e.target.value)}
+                    />
+                    <FieldCheck valid={!!userName?.trim() && !signupError.username} />
+                </div>
                 {signupError.username && <p className="text-[#EC3013]">{signupError.username[0]}</p>}
 
             </div>}
@@ -118,13 +122,23 @@ const AuthForm = ({ userName, setUserName, email, setEmail, password, setPasswor
 
             <div className="flex flex-col gap-1">
                 <label htmlFor="email" className="text-[14px]">Email</label>
-                <input
-                    className="bg-[#1E2031] p-2 pl-3 rounded-xl"
-                    type="email" id="email" name="email"
-                    
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
+                <div className="relative">
+                    <input
+                        className={`bg-[#1E2031] p-2 pl-3 rounded-xl border ${signupError.email || loginError
+                            ? "border-[#EC3013]"
+                            : "border-transparent"
+                            } w-full`}
+                        type="email" id="email" name="email"
+
+                        value={email}
+                        onChange={(e) => { setEmail(e.target.value), setLoginError("") }}
+                    />
+                    <FieldCheck
+                        valid={
+                            /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) &&
+                            !signupError.email
+                        } />
+                </div>
                 {signupError.email && <p className="text-[#EC3013]">{signupError.email[0]}</p>}
             </div>
 
@@ -134,30 +148,52 @@ const AuthForm = ({ userName, setUserName, email, setEmail, password, setPasswor
             <div className="flex gap-4">
                 <div className={`${name === "Log In" ? "w-full" : ""} flex flex-col gap-1`}>
                     <label htmlFor="password" className="text-[14px]">password</label>
-                    <input
-                        className="bg-[#1E2031] p-2 pl-3 rounded-xl"
-                        type="password" id="password" name="password"
-                        
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
+                    <div className="relative">
+                        <input
+                            className={`bg-[#1E2031] p-2 pl-3 rounded-xl border ${loginError || signupError.password
+                                ? "border-[#EC3013]"
+                                : "border-transparent"
+                                } w-full`}
+                            type="password" id="password" name="password"
+
+                            value={password}
+                            onChange={(e) => { setPassword(e.target.value), setLoginError("") }}
+                        />
+                        <FieldCheck
+                            valid={
+                                password.length >= 8 &&
+                                !(name === "Sign Up" && signupError.password)
+                            }
+                        />
+                    </div>
                     {loginError && <p className="text-[#EC3013]">{loginError}</p>}
-                    {name==="Sign Up"&& signupError.password&&(<p className="text-[#EC3013]">{signupError.password[0]}</p>)}
+                    {name === "Sign Up" && signupError.password && (<p className="text-[#EC3013]">{signupError.password[0]}</p>)}
                 </div>
 
 
 
                 {name === "Sign Up" && <div className="flex flex-col gap-1">
                     <label htmlFor="password_confirmation" className="text-[14px]">Confirm password</label>
-                    <input
-                        className={`bg-[#1E2031] p-2 pl-3 rounded-xl ${signupError.password_confirmation ? "border border-[#EC3013]" : ""
-                            }`}
-                        type="password" id="password_confirmation" name="password_confirmation"
-                        
-                        value={confirmPassword??""}
-                        onChange={(e) => setConfirmPassword && setConfirmPassword(e.target.value)}
-                    />
-                    {signupError.password_confirmation&&<p className="text-[#EC3013]">{signupError.password_confirmation[0]}</p>}
+                    <div className="relative">
+                        <input
+                            className={`bg-[#1E2031] p-2 pl-3 rounded-xl border ${signupError.password_confirmation
+                                ? "border-[#EC3013] w-full"
+                                : "border-transparent"
+                                }`}
+                            type="password" id="password_confirmation" name="password_confirmation"
+
+                            value={confirmPassword ?? ""}
+                            onChange={(e) => setConfirmPassword && setConfirmPassword(e.target.value)}
+                        />
+                        <FieldCheck
+                            valid={
+                                !!password &&
+                                password === confirmPassword &&
+                                !signupError.password_confirmation
+                            }
+                        />
+                    </div>
+                    {signupError.password_confirmation && <p className="text-[#EC3013]">{signupError.password_confirmation[0]}</p>}
                 </div>}
 
 
@@ -165,11 +201,11 @@ const AuthForm = ({ userName, setUserName, email, setEmail, password, setPasswor
             </div>
 
             <button
-               type="submit"
-               disabled={!isFormFilled}
+                type="submit"
+                disabled={!isFormFilled}
                 className={`text-[#A9A9A9] rounded-2xl p-2 mt-5 cursor-pointer ${isFormFilled
-                        ? "bg-[#EC3013] text-white"
-                        : "bg-[#505261] text-[#A9A9A9]"
+                    ? "bg-[#EC3013] text-white"
+                    : "bg-[#505261] text-[#A9A9A9]"
                     }`}
             >
                 {name}
