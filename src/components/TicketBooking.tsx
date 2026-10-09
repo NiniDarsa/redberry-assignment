@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import Timer from "./Timer"
 import TicketButtonsContainer from "./TicketButtonsContainer"
 import SeatsMap from "./SeatsMap"
@@ -7,6 +7,8 @@ import Pay from "./Pay"
 import type { TSession } from "../types/sessionDetail"
 import type { THold } from "../types/holdSeats"
 import type { TOrder } from "../types/completeOrder"
+import useTicketContext from "../hooks/useTicketContext"
+import { CancelHold, GetHold, GetSeatMap } from "../functions/function"
 
 type TTicketBooking = {
     isModalOpen: boolean
@@ -18,11 +20,92 @@ type TTicketBooking = {
 }
 
 const TicketBooking = ({ clickedSession, name, MovieAge, isModalOpen, isConfirmed, setOrder }: TTicketBooking) => {
-    const [clickedButton, setClickedButton] = useState<"seats" | "checkout">("seats")
+    const [currentLocation, setCurrentLocation] = useState<"seats" | "checkout">("seats")
     const [HoldSeatsdata, setHoldSeatsData] = useState<THold>()
+    const [loading, setLoading] = useState(false)
+    const { setSelectedSeats, setExpiresAt, setHoldError, setSeatMap } = useTicketContext()
 
-    const hanndleButtonClick = (name: "seats" | "checkout") => {
-        setClickedButton(name)
+    const handleHoldExpired=useCallback(()=>{
+        setHoldSeatsData(undefined)
+        setCurrentLocation("seats")
+    },[])
+
+    // Restore a previously created hold after reopening the modal or refreshing
+    useEffect(() => {
+        if (!isModalOpen || !clickedSession) return
+
+        const restoreHold = async () => {
+            const holdId = localStorage.getItem("activeHoldId")
+
+            if (!holdId) return
+
+            try {
+                const hold: THold = await GetHold(holdId)
+
+                // Make sure this hold belongs to the session being booked
+                if (hold.sessionId !== clickedSession.id){
+                    await CancelHold(holdId).catch(console.error)
+                    localStorage.removeItem("acviteHoldId")
+                    return
+                }
+
+                if (!hold.isLive || hold.secondsRemaining <= 0) {
+                    localStorage.removeItem("activeHoldId")
+                    setHoldSeatsData(undefined)
+                    setSelectedSeats([])
+                    setExpiresAt(null)
+                    setCurrentLocation("seats")
+                    setHoldError(
+                        "Your hold time expired. Please re-select your seats."
+                    )
+
+                    const seatMap = await GetSeatMap(clickedSession.id)
+                    setSeatMap(seatMap)
+                    return
+                }
+
+                //  Restore the live hold and its original expiry
+                setHoldSeatsData(hold)
+                setExpiresAt(hold.expiresAt)
+
+                //  Restore the selected seats and ticket types
+                setSelectedSeats(
+                    hold.seats.map((seat) => ({
+                        seatId: seat.seatId,
+                        ticketType: seat.ticketType.slug as "adult" | "student" | "child",
+                    }))
+                )
+
+                setCurrentLocation("checkout")
+            } catch (error) {
+                const holdError = error as { status?: number }
+
+                // 404 means the saved hold no longer exists
+                if (holdError.status === 404) {
+                    localStorage.removeItem("activeHoldId")
+                    setHoldSeatsData(undefined)
+                    setSelectedSeats([])
+                    setExpiresAt(null)
+                    setCurrentLocation("seats")
+                } else {
+                    console.error("Could not restore hold:", error)
+                }
+            }
+        }
+
+        restoreHold()
+    }, [
+        isModalOpen,
+        clickedSession,
+        setSelectedSeats,
+        setExpiresAt,
+        setHoldError,
+        setSeatMap,
+    ])
+
+
+    const handleCurrentLocation = (name: "seats" | "checkout") => {
+        setCurrentLocation(name)
     }
 
 
@@ -35,26 +118,26 @@ const TicketBooking = ({ clickedSession, name, MovieAge, isModalOpen, isConfirme
                     . {clickedSession?.format.name} . {clickedSession?.language.name}
                 </p>
             </div>
-            <Timer clickedSession={clickedSession} />
+            <Timer clickedSession={clickedSession} onExpired={handleHoldExpired} />
 
         </div>
 
         <div className="flex gap-2 flex-1 min-h-0 overflow-hidden" >
-
             <div className="flex-4 flex flex-col gap-5 min-h-0 overflow-scroll">
-                <TicketButtonsContainer clickedButton={clickedButton} hanndleButtonClick={hanndleButtonClick} />
+                <TicketButtonsContainer currentLocation={currentLocation} />
 
                 <div className="flex flex-col gap-2">
-                    {clickedButton === "seats" ?
+                    {currentLocation === "seats" ?
                         <SeatsMap isModalOpen={isModalOpen} clickedSession={clickedSession} />
-                        : <Checkout HoldSeatsData={HoldSeatsdata} isConfirmed={isConfirmed}  setOrder={setOrder} />
+                        : <Checkout setLoading={setLoading} HoldSeatsData={HoldSeatsdata} isConfirmed={isConfirmed} setOrder={setOrder} />
                     }
                 </div>
 
             </div>
 
-            <Pay clickedSession={clickedSession} MovieAge={MovieAge} clickedButton={clickedButton}
-                hanndleButtonClick={hanndleButtonClick} name={name} HoldSeatsdata={HoldSeatsdata} setHoldSeatsData={setHoldSeatsData}
+            <Pay clickedSession={clickedSession} MovieAge={MovieAge} currentLocation={currentLocation}
+                handleCurrentLocation={handleCurrentLocation} name={name} HoldSeatsdata={HoldSeatsdata} setHoldSeatsData={setHoldSeatsData}
+                setLoading={setLoading} loading={loading}
             />
 
         </div>

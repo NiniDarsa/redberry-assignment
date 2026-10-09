@@ -15,20 +15,21 @@ import type { THold } from "../types/holdSeats"
 type TSelectedTickets = {
     clickedSession: TSession | undefined
     MovieAge: number | undefined
-    clickedButton: "seats" | "checkout"
-    hanndleButtonClick: (name: "seats" | "checkout") => void
+    currentLocation: "seats" | "checkout"
+    handleCurrentLocation: (name: "seats" | "checkout") => void
     name:string|undefined
     HoldSeatsdata: THold | undefined
     setHoldSeatsData: React.Dispatch<React.SetStateAction<THold | undefined>>
+    loading:boolean
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const Pay = ({ clickedSession, MovieAge, clickedButton, hanndleButtonClick,name, HoldSeatsdata, setHoldSeatsData }: TSelectedTickets) => {
+const Pay = ({ clickedSession, MovieAge, currentLocation, handleCurrentLocation,name, HoldSeatsdata, setHoldSeatsData,loading,setLoading }: TSelectedTickets) => {
     const { selectedSeats, setSelectedSeats, setHoldError, seatMap, setSeatMap, setExpiresAt } = useTicketContext()
 
     const [isHolding, setIsHolding] = useState(false)
     const { setIsAuthModalOpen } = useAppContext()
     const { user } = useAuthContext()
-    console.error(HoldSeatsdata)
 
     const [filterOptins] = useFilterOptions()
 
@@ -42,7 +43,6 @@ const Pay = ({ clickedSession, MovieAge, clickedButton, hanndleButtonClick,name,
             return
         }
 
-        console.warn("THAT", clickedSession)
         setIsHolding(true)
         setHoldError("")
 
@@ -54,7 +54,8 @@ const Pay = ({ clickedSession, MovieAge, clickedButton, hanndleButtonClick,name,
            
             setHoldSeatsData(result.data)
             setExpiresAt(result.data.expiresAt)
-            hanndleButtonClick("checkout")
+            localStorage.setItem("activeHoldId", result.data.holdId)
+            handleCurrentLocation("checkout")
 
 
         } catch (error: any) {
@@ -133,28 +134,29 @@ const Pay = ({ clickedSession, MovieAge, clickedButton, hanndleButtonClick,name,
     return (<div className="relative flex flex-2 flex-col  gap-2 border-l border-[#2A2C3D] p-2 min-h-0 overflow-hidden">
 
         <div className="flex flex-col flex-1 min-h-0">
-            {clickedButton === "seats" && <MyHoldingTickets getTicketPrice={getTicketPrice} />}
-            {clickedButton==="checkout"&&<TicketSummary HoldSeatsdata={HoldSeatsdata} clickedSession={clickedSession} name={name}/>}
+            {currentLocation === "seats" && <MyHoldingTickets getTicketPrice={getTicketPrice} />}
+            {currentLocation==="checkout"&&<TicketSummary HoldSeatsdata={HoldSeatsdata} clickedSession={clickedSession} name={name}/>}
         </div>
 
         <div className="flex flex-col gap-2">
 
             <div className="flex justify-between">
                 <p>SUBTOTAL</p>
-                <p>{totalPrice} ლ</p>
+                <p>₾ {totalPrice} </p>
             </div>
 
-            {clickedButton === "seats" && <button className="text-center p-3 rounded-3xl bg-[#2A2C3D] disabled:opacity-50"
+            {currentLocation === "seats" && <button className="text-center p-3 rounded-3xl bg-[#2A2C3D] disabled:opacity-50"
                 disabled={isHolding || selectedSeats.length === 0}
                 onClick={handleHoldSeats}>
                 {isHolding ? "Holding..." : "Next: Checkout"}</button>}
-            {clickedButton==="checkout"&&    
+            
+            {currentLocation==="checkout"&&    
                  <button 
                 form="checkout-form"
                 type="submit"
                 className="text-center p-3 rounded-3xl bg-[#2A2C3D] disabled:opacity-50">
-                    Pay: Complete order
-                    </button>
+                   {loading ? "Processing payment..." : "Pay: Complete order"}
+                 </button>
 
             }
         </div>

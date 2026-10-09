@@ -3,7 +3,8 @@ import type { TVenueSessionsResponse } from "../types/sessionDetail";
 
 export function useMovieSessions(name="",searchPar:string){
     const [MovieSessions, setMovieSessions] = useState<TVenueSessionsResponse>()
-     useEffect(() => {
+   
+    useEffect(() => {
             fetch(`https://api.kinoxii.redberryinternship.ge/api/movies/${name}/sessions?${searchPar}`)
                 .then((response) => {
                     if (!response.ok) {

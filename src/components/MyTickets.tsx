@@ -2,10 +2,17 @@ import { useEffect, useState } from "react"
 import type { TOrder } from "../types/orders"
 import useAppContext from "../hooks/useAppContext"
 import { GetOrders, RefundOrder } from "../functions/function"
+import { useLocation, useOutletContext } from "react-router-dom"
+
+
+export type TProfileContext = {
+    Myorders: TOrder[]
+    setMyOrders: React.Dispatch<React.SetStateAction<TOrder[]>>
+}
 
 const MyTickets = () => {
+    const { Myorders, setMyOrders } = useOutletContext<TProfileContext>()
     const [filter, setFilter] = useState<"upcoming" | "past">("upcoming")
-    const [Myorders, setMyOrders] = useState<TOrder[]>([])
     const { setIsAuthModalOpen } = useAppContext()
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState("")
@@ -69,17 +76,21 @@ const MyTickets = () => {
             }
 
             //  Update using the order returned by the API
+            //When the refund succeeds, the API returns the updated order
             const updatedOrder: TOrder = result.data
 
-            setMyOrders((currentOrders) =>
-                currentOrders.map((currentOrder) =>
-                    currentOrder.id === updatedOrder.id
-                        ? updatedOrder
-                        : currentOrder
-                )
-            )
+            const newOrders = Myorders.map((item) => {
+                if (item.id === updatedOrder.id) {
+                    return updatedOrder
+                } else {
+                    return item
+                }
+            })
+            setMyOrders(newOrders)
 
-            //  Refresh the current tab from the server
+
+            // Refresh the current tab from the server
+            // another API request to get the latest orders.
             try {
                 const refreshedOrders = await GetOrders(filter)
 
@@ -100,6 +111,12 @@ const MyTickets = () => {
         }
     }
 
+    const location = useLocation()
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [location.pathname])
+
 
     return (<div className="text-white flex flex-col gap-3">
         <div className="flex gap-2 bg-[#1E2031] w-fit p-2 px-4 rounded-2xl mb-5">
@@ -108,7 +125,7 @@ const MyTickets = () => {
                 onClick={() => setFilter("upcoming")}>Upcomming<span className="text-[#EC3013] "> {filter === "upcoming" ? Myorders.length : ""}</span></button>
             <button
                 className={filter === "past" ? "bg-[#505261] p-2 rounded-xl" : "p-2"}
-                onClick={() => setFilter("past")}>Past<span className="text-[#EC3013]">{filter === "past" ? Myorders.length : ""}</span></button>
+                onClick={() => setFilter("past")}>Past<span className="text-[#EC3013]"> {filter === "past" ? Myorders.length : ""}</span></button>
         </div>
 
 
@@ -137,7 +154,7 @@ const MyTickets = () => {
             </p>
         )}
 
-        {!isLoading && !error && Myorders.map((item) => {
+        {!isLoading && !error && Myorders.reverse().map((item) => {
             return (<div key={item.id}
                 className="bg-[#1E2031] rounded-2xl p-2 flex items-center">
                 <div className="flex gap-2 flex-3 p-3 items-center">
@@ -155,17 +172,29 @@ const MyTickets = () => {
                         <div className="flex gap-7">
                             <div>
                                 <h4 className="text-[12px] text-[#A9A9A9]">DATE</h4>
-                                <div className="flex"><span>{item.session.date}.</span><span>{item.session.time}</span></div>
+                                <div className="flex">
+                                    <div className="flex gap-2">
+                                        <span>
+                                            {new Date(item.session.date).toLocaleDateString("en-GB", {
+                                                weekday: "short",
+                                                day: "numeric",
+                                                month: "short",
+                                            })}
+                                        </span> .
+                                        <span>{item.session.time}</span>
+
+                                    </div>
+                                </div>
                             </div>
 
                             <div>
                                 <h4 className="text-[12px] text-[#A9A9A9]">VENUE</h4>
-                                <div className="flex"><span>{item.session.venue.name}.</span><span>Hall {item.session.hall.name}</span></div>
+                                <div className="flex gap-2"><span>{item.session.venue.name} .</span><span>Hall {item.session.hall.name}</span></div>
                             </div>
 
-                            <div>
+                            <div >
                                 <h4 className="text-[12px] text-[#A9A9A9]">FORMAT</h4>
-                                <div className="flex"><span>{item.session.format.name}.</span><span>{item.session.language.name}</span></div>
+                                <div className="flex gap-2"><span>{item.session.format.name} . </span><span>{item.session.language.name}</span></div>
                             </div>
 
                         </div>
@@ -173,7 +202,7 @@ const MyTickets = () => {
                         <div className="flex items-center gap-2 ">
                             <p className="text-[12px] text-[#A9A9A9]">SEATS</p>
                             {item.tickets.map((item) => {
-                                return (<div key={item.id} className="p-1 px-3 rounded-2xl bg-[#2A2C3D]">{item.seatCode}.{item.ticketType.name}</div>
+                                return (<div key={item.id} className="p-1 px-3 rounded-2xl bg-[#2A2C3D] flex gap-2"><span>{item.seatCode}</span> . <span>{item.ticketType.name}</span> </div>
                                 )
                             })}
                         </div>
@@ -188,7 +217,7 @@ const MyTickets = () => {
                     <div className="flex flex-col gap-2">
                         <div className="flex justify-between">
                             <p className="text-[12px]">Total paid</p>
-                            <p className="font-extrabold">{item.totalPrice} ლ</p>
+                            <p className="font-extrabold">₾ {item.totalPrice} </p>
                         </div>
 
                         <button
@@ -197,14 +226,29 @@ const MyTickets = () => {
                             className={`p-2 rounded-2xl px-4 ${item.isRefundable && refundingOrderId !== item.id
                                 ? "bg-[#2A2C3D] text-white cursor-pointer"
                                 : "bg-[#2A2C3D] text-[#A9A9A9] cursor-not-allowed opacity-50"
-                                }`}>{refundingOrderId === item.id ? "Refunding..." : "Refund"}</button>
+                                }`}> {refundingOrderId === item.id ? "Refunding..." : "Refund"}</button>
+
+
                         {item.isUpcoming && !item.isRefundable && (
                             <p className="text-center text-[#A9A9A9]">
                                 Refund is no longer available
                             </p>
                         )}
 
-                        <p className="text-center">{item.refundedAt}</p>
+                        <p className="text-center text-[#A9A9A9] text-sm">
+                            Refundable until{" "}
+                            {new Date(
+                                `${item.session.date}T${item.session.time}`
+                            ).toLocaleString("en-GB", {
+                                weekday: "short",
+                                day: "numeric",
+                                month: "short",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hourCycle: "h23",
+                            })}
+                        </p>
+
 
                     </div>
                 </div>

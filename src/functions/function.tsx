@@ -297,6 +297,55 @@ export const RefundOrder = async (reference: string) => {
 }
 
 
+export const GetHold = async (holdId: string) => { 
+    const token = localStorage.getItem("token")
+
+    const response = await fetch(
+        `https://api.kinoxii.redberryinternship.ge/api/holds/${holdId}`, 
+        {
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    )
+
+    const result = await response.json().catch(() => ({}))
+
+    if (!response.ok) {
+        throw {
+            status: response.status,
+            ...result,
+        }
+    }
+
+    return result.data
+}
+
+export const CancelHold = async (holdId: string) => { 
+    const token = localStorage.getItem("token")
+
+    const response = await fetch(
+        `https://api.kinoxii.redberryinternship.ge/api/holds/${holdId}`,
+        {
+            method: "DELETE",
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    )
+
+    if (!response.ok) {
+        const result = await response.json().catch(() => ({}))
+
+        throw {
+            status: response.status,
+            ...result,
+        }
+    }
+}
+
 
 
 

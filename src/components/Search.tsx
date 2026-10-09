@@ -111,7 +111,7 @@ const Search = () => {
                                     </div>
 
                                     <div className="shrink-0 whitespace-nowrap">
-                                        from {item.fromPrice}ლ
+                                        from ₾ {item.fromPrice}
                                     </div>
                                 </div>)
                             })}

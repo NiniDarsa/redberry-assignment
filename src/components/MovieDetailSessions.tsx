@@ -10,7 +10,7 @@ type TMovieDetailSessions = {
     movieDetails: TMovieDetails | undefined
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
     movieSessions: TVenueSessionsResponse| undefined
-   setClickedSession: React.Dispatch<React.SetStateAction<TSession | undefined>>
+   setClickedSession: React.Dispatch<React.SetStateAction<TSession|undefined>>
 }
 
 const MovieDetailSessions = ({  movieDetails,  setIsOpen, movieSessions, setClickedSession }: TMovieDetailSessions) => {
@@ -176,7 +176,7 @@ const MovieDetailSessions = ({  movieDetails,  setIsOpen, movieSessions, setClic
                                                                             >
 
                                                                                 <p className="text-[#EC3013] font-extrabold">
-                                                                                    {session.price}ლ
+                                                                                   ₾ {session.price}
                                                                                 </p>
 
                                                                                 <p className="text-[#A9A9A9] text-[12px]">

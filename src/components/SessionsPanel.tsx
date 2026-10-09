@@ -8,21 +8,18 @@ import SortButton from "./SortButton"
 
 
 const SessionsPanel = () => {
-    const {  searchPar:searchParams, setSort,  setPage,page  }=useSessionsContext()
-    
+    const { searchPar: searchParams, setSort, setPage, page } = useSessionsContext()
+
     const url = `https://api.kinoxii.redberryinternship.ge/api/sessions?${searchParams}`
 
-
     const [sessions, meta] = useSessionsInfo(url)
-   
-    const navigate = useNavigate()
 
-console.warn(sessions)
+    const navigate = useNavigate()
 
     return (<section className="text-white pt-15 w-full min-w-0">
         <header className="flex justify-between">
             <p>showing <span>{meta?.totalSessions ?? 0}</span> sessions</p>
-            <SortButton setSort={setSort}/>
+            <SortButton setSort={setSort} />
         </header>
 
 
@@ -38,13 +35,23 @@ console.warn(sessions)
 
                 <div className="flex gap-4 overflow-x-auto min-w-0">
                     {item.sessions.map((item) => {
-                        return (<div 
-                            onClick={() => navigate(`/movie/${item.movie.slug}`)}
-                            
+                        return (<div
+                            //         onClick={() => {
+                            //             navigate(`/movie/${item.movie.slug}`),
+                            // }}
+                            onClick={() => {
+                                navigate(`/movie/${item.movie.slug}`, {
+                                    state: {
+                                        openModal: true,
+                                        session: item,
+                                    },
+                                })
+                            }}
+
                             className={`cursor-pointer shrink-0 ${item.isSoldOut
-                            ? "cursor-default"
-                            : "cursor-pointer"
-                            }`}>
+                                ? "cursor-default"
+                                : "cursor-pointer"
+                                }`}>
                             <div className={`flex gap-4 w-[252px]  items-center justify-around px-1 py-4 rounded-xl ${item.isSoldOut
                                 ? "bg-[#151722]"
                                 : "bg-[#1E2031]"}`}>
@@ -63,7 +70,7 @@ console.warn(sessions)
                                         </svg>
                                         {item.seatsLeft} left
                                     </p>
-                                    <p className="font-extrabold">{item.price} ლ</p>
+                                    <p className="font-extrabold">₾ {item.price} </p>
                                 </div>
                             </div>
 
@@ -78,7 +85,7 @@ console.warn(sessions)
 
         {/*pagination */}
         {
-            meta && <Pagination meta={meta}/>
+            meta && <Pagination meta={meta} />
         }
 
 

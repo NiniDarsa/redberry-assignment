@@ -1,20 +1,25 @@
 import { useEffect, useState } from "react"
 import type { TSession } from "../types/sessionDetail"
-import { GetSeatMap } from "../functions/function"
+import { CancelHold, GetSeatMap } from "../functions/function"
 import useTicketContext from "../hooks/useTicketContext"
 
 
 type TTimer = {
     clickedSession: TSession | undefined
+    onExpired:()=>void
 }
 
-const Timer = ({ clickedSession }: TTimer) => {
+const Timer = ({ clickedSession,onExpired }: TTimer) => {
     const [timeLeft, setTimeLeft] = useState(0)
     const { expiresAt, setSelectedSeats, setExpiresAt, setHoldError, setSeatMap } = useTicketContext()
 
     //CountDown//
     useEffect(() => {
-        if (!expiresAt) return
+        if (!expiresAt){
+            setTimeLeft(0)
+            return
+        }
+        let hasExpired=false
 
         const updateTimer = () => {
             const remaining = Math.max(
@@ -26,7 +31,13 @@ const Timer = ({ clickedSession }: TTimer) => {
 
             setTimeLeft(remaining)
 
-            if (remaining === 0) {
+            if (remaining === 0&&!hasExpired) {
+                hasExpired=true
+                const holdId=localStorage.getItem("activeHoldId")
+                localStorage.removeItem("activeHoldId")
+                if(holdId){
+                    CancelHold(holdId).catch(console.error)
+                }
                 setSelectedSeats([])
                 setExpiresAt(null)
                 setHoldError("Your hold time expired. Please re-select your seats.")
@@ -36,6 +47,7 @@ const Timer = ({ clickedSession }: TTimer) => {
                         .then(setSeatMap)
                         .catch(console.error)
                 }
+                onExpired()
             }
         }
 
@@ -44,7 +56,7 @@ const Timer = ({ clickedSession }: TTimer) => {
         const interval = setInterval(updateTimer, 1000)
 
         return () => clearInterval(interval)
-    }, [expiresAt, clickedSession])
+    }, [expiresAt, clickedSession, onExpired])
 
     const minutes = Math.floor(timeLeft / 60)
     const seconds = timeLeft % 60

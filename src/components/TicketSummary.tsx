@@ -8,7 +8,8 @@ type TTicketSummary = {
     
 }
 const TicketSummary = ({ HoldSeatsdata, clickedSession,name }: TTicketSummary) => {
-     const ticketCounts = HoldSeatsdata?.seats.reduce(
+     
+    const ticketCounts = HoldSeatsdata?.seats.reduce(
         (counts, seat) => {
             const type = seat.ticketType.name
 
@@ -26,9 +27,8 @@ const TicketSummary = ({ HoldSeatsdata, clickedSession,name }: TTicketSummary) =
                 <div>
                     <h2>{name}</h2>
                     <p className="border-b border-[#2A2C2D]">
-                         Hall {clickedSession?.hall.name} . {clickedSession?.date} . {clickedSession?.time}
-                                   
-                       </p>
+                         Hall {clickedSession?.hall.name} . {clickedSession?.date} . {clickedSession?.time}                   
+                    </p>
                 </div>
 
                 <div>

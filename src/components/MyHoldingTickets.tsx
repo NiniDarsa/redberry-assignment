@@ -8,20 +8,18 @@ type TMyHoldingTickets={
 const MyHoldingTickets = ({getTicketPrice}:TMyHoldingTickets) => {
 const {selectedSeats,setSelectedSeats,seatMap}=useTicketContext()
      //change Ticket Type
-        const handleTicketTypeChange = (
-            seatId: number,
-            ticketType: TTicketType
-        ) => {
-            const newSeats = selectedSeats.map((seat) =>
-                seat.seatId === seatId
-                    ? { ...seat, ticketType }
-                    : seat
-            )
-    
+       const handleTicketTypeChange = (seatId: number,ticketType: TTicketType) => {           
+         const newSeats=selectedSeats.map((seat) =>{   
+            if(seat.seatId===seatId){
+                return {...seat,ticketType}
+            }else{
+                return seat
+            }         
+         })
             setSelectedSeats(newSeats)
         }
-    return (<>
 
+    return (<>
         <p className="font-extrabold">
             Your seats . Max 3
         </p>
@@ -57,65 +55,32 @@ const {selectedSeats,setSelectedSeats,seatMap}=useTicketContext()
                             </p>
 
                             <p className="text-[#A9A9A9] text-sm">
-                                Price: {getTicketPrice(selectedSeat.ticketType)} ლ
+                                Price: ₾ {getTicketPrice(selectedSeat.ticketType)} 
                             </p>
                         </div>
 
-                        {/* buttons */}
                         <div className="flex justify-between w-full gap-2 text-[12px] pt-4 border-t border-[#2A2C3D]">
-
-                            {/* {age && age < 16 && ( */}
-                            <button
+                           <button
                                 type="button"
-                                onClick={() =>
-                                    handleTicketTypeChange(
-                                        selectedSeat.seatId,
-                                        "child"
-                                    )
-                                }
-                                className={`cursor-pointer px-3 py-2 rounded-3xl whitespace-nowrap ${selectedSeat.ticketType === "child"
-                                    ? "bg-[#EC3013]"
-                                    : "bg-[#2A2C3D]"
-                                    }`}
-                            >
+                                onClick={() => handleTicketTypeChange(selectedSeat.seatId, "child")}
+                                className={`cursor-pointer px-3 py-2 rounded-3xl whitespace-nowrap ${selectedSeat.ticketType === "child"? "bg-[#EC3013]"  : "bg-[#2A2C3D]" }`}>
                                 Child 60%
                             </button>
-                            {/* )} */}
 
                             <button
                                 type="button"
-                                onClick={() =>
-                                    handleTicketTypeChange(
-                                        selectedSeat.seatId,
-                                        "student"
-                                    )
-                                }
-                                className={`cursor-pointer px-3 py-2 rounded-3xl whitespace-nowrap ${selectedSeat.ticketType === "student"
-                                    ? "bg-[#EC3013]"
-                                    : "bg-[#2A2C3D]"
-                                    }`}
-                            >
+                                onClick={() =>handleTicketTypeChange(selectedSeat.seatId,"student")}
+                                className={`cursor-pointer px-3 py-2 rounded-3xl whitespace-nowrap ${selectedSeat.ticketType === "student"? "bg-[#EC3013]" : "bg-[#2A2C3D]" }`}>
                                 Student 75%
                             </button>
 
                             <button
                                 type="button"
-                                onClick={() =>
-                                    handleTicketTypeChange(
-                                        selectedSeat.seatId,
-                                        "adult"
-                                    )
-                                }
-                                className={`cursor-pointer px-3 py-2 rounded-3xl whitespace-nowrap ${selectedSeat.ticketType === "adult"
-                                    ? "bg-[#EC3013]"
-                                    : "bg-[#2A2C3D]"
-                                    }`}
-                            >
+                                onClick={() =>handleTicketTypeChange(selectedSeat.seatId,"adult")}
+                                className={`cursor-pointer px-3 py-2 rounded-3xl whitespace-nowrap ${selectedSeat.ticketType === "adult"? "bg-[#EC3013]" : "bg-[#2A2C3D]"}`}>
                                 Adult 100%
                             </button>
-
                         </div>
-
                     </div>
                 )
             })}

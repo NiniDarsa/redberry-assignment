@@ -3,8 +3,16 @@ import useAuthContext from "../hooks/useAuthContext"
 import type { THold } from "../types/holdSeats"
 import { CompleteOrder } from "../functions/function"
 import type { TOrder } from "../types/completeOrder"
+import useTicketContext from "../hooks/useTicketContext"
 
-const Checkout = ({ HoldSeatsData,isConfirmed,setOrder }: { HoldSeatsData: THold | undefined ,isConfirmed:()=>void, setOrder: React.Dispatch<React.SetStateAction<TOrder | undefined>>}) => {
+const Checkout = ({ HoldSeatsData, isConfirmed, setOrder,setLoading }: { HoldSeatsData: THold | undefined, isConfirmed: () => void, setOrder: React.Dispatch<React.SetStateAction<TOrder | undefined>>,setLoading:React.Dispatch<React.SetStateAction<boolean>> }) => {
+
+    const { holdError } = useTicketContext()
+    const { user } = useAuthContext()
+
+    const [fullName, setFullName] = useState(user?.data.fullName || "")
+    const [email, setEmail] = useState(user?.data.email || "")
+    const [mobileNumber, setMobileNumber] = useState(user?.data.mobileNumber || "")
     const [cardNumb, setCardNumb] = useState("")
     const [expiry, setexpiry] = useState("")
     const [cvv, setcvv] = useState("")
@@ -14,7 +22,6 @@ const Checkout = ({ HoldSeatsData,isConfirmed,setOrder }: { HoldSeatsData: THold
         cvv: "",
     })
     const [message, setMessage] = useState<string | undefined>("")
-    const [loading, setLoading] = useState(false)
 
 
     const cardNumbChange = (e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>) => {
@@ -29,24 +36,22 @@ const Checkout = ({ HoldSeatsData,isConfirmed,setOrder }: { HoldSeatsData: THold
         setcvv(e.target.value)
     }
 
-    const { user } = useAuthContext()
-
 
     // Handle Purchase (step2 pay)
     const handlePurchase = async (e: React.FormEvent) => {
-       
+
         e.preventDefault()
         setMessage("")
         setErrors({ cardNumber: "", expiry: "", cvv: "" })
         setLoading(true)
-         
+
 
         try {
             const result = await CompleteOrder({
                 holdId: HoldSeatsData?.holdId,
-                fullName: user?.data.fullName || "",
-                email: user?.data.email || "",
-                mobileNumber: user?.data.mobileNumber || "",
+                fullName: fullName,
+                email: email,
+                mobileNumber: mobileNumber,
                 cardNumber: cardNumb,
                 expiry,
                 cvv,
@@ -55,10 +60,10 @@ const Checkout = ({ HoldSeatsData,isConfirmed,setOrder }: { HoldSeatsData: THold
 
 
             if (result.status === 201) {
-
+                localStorage.removeItem("activeHoldId")
                 console.log("Order completed:", result.data.data)
                 setOrder(result.data.data)
-               //show confirm modal
+                //show confirm modal
                 isConfirmed()
                 return
             }
@@ -78,9 +83,7 @@ const Checkout = ({ HoldSeatsData,isConfirmed,setOrder }: { HoldSeatsData: THold
             }
 
             if (result.status === 409) {
-                setMessage(
-                    `These seats were just sold: ${result.data.contested}`
-                )
+                setMessage(`These seats were just sold: ${result.data.contested}`)
                 return
             }
 
@@ -110,8 +113,9 @@ const Checkout = ({ HoldSeatsData,isConfirmed,setOrder }: { HoldSeatsData: THold
                     <input
                         className="rounded-2xl bg-[#2A2C3D] py-2 px-3"
                         type="text" id="fullname" name="fullname"
-                        value={user?.data.fullName || ""}
-                        readOnly />
+                        value={fullName}
+                        onChange={e => setFullName(e.target.value)}
+                    />
                 </div>
 
 
@@ -121,15 +125,17 @@ const Checkout = ({ HoldSeatsData,isConfirmed,setOrder }: { HoldSeatsData: THold
                         <input
                             className="rounded-2xl bg-[#2A2C3D] py-2 px-3"
                             type="email" id="email" name="email"
-                            value={user?.data.email} readOnly />
+                            value={email}
+                            onChange={e => setEmail(e.target.value)} />
                     </div>
 
                     <div className="flex flex-col flex-1">
-                        <label htmlFor="mobile">Email</label>
+                        <label htmlFor="mobile">Mobile number</label>
                         <input
                             className="rounded-2xl bg-[#2A2C3D] py-2 px-3"
-                            type="text" id="email" name="email"
-                            value={user?.data.mobileNumber || ""} readOnly />
+                            type="text" id="mobile" name="mobile"
+                            value={mobileNumber}
+                            onChange={e => setMobileNumber(e.target.value)} />
                     </div>
                 </div>
             </div>
@@ -187,6 +193,9 @@ const Checkout = ({ HoldSeatsData,isConfirmed,setOrder }: { HoldSeatsData: THold
                     {message}
                 </p>
             )}
+            {holdError && <p className="text-red-500 text-sm">
+                {holdError}
+            </p>}
         </form>
 
     </div>)

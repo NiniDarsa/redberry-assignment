@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react"
 const useOnClickOutside = () => {
     const [isOpen, setIsOpen] = useState(false)
     const ref = useRef<HTMLDivElement>(null)
+   
 
     useEffect(() => {
         const onClick = (e: MouseEvent) => {
@@ -24,7 +25,8 @@ const useOnClickOutside = () => {
     return {
         isOpen,
         setIsOpen,
-        ref
+        ref,
+       
     }
 }
 

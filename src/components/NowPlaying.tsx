@@ -49,10 +49,10 @@ const NowPlayingSection = () => {
 
                         </div>
                         <div className="mt-auto flex items-center justify-between gap-2 ">
-                            <p className="font-extrabold">from {item.fromPrice}ლ</p>
+                            <p className="font-extrabold">from ₾ {item.fromPrice}</p>
                             <button
-                                onClick={() => navigate("/sessions")}
-                                className="font-extrabold bg-[#EC3013] px-4 py-1.5 rounded-full cursor-pointer">buy ticket</button>
+                            onClick={() => {navigate(`/movie/${item.slug}`)}}
+                           className="font-extrabold bg-[#EC3013] px-4 py-1.5 rounded-full cursor-pointer">buy ticket</button>
                         </div>
                     </article>)
                 })}
