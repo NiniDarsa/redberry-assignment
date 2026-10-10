@@ -13,7 +13,7 @@ const NowPlayingSection = () => {
     // const SlicedMovies = nowPlayingMovies.slice(0, 6)
 
     //hover
-    function MouseEnter(e: React.MouseEvent<HTMLElement>, item: TMovie) {
+    function MouseEnter(_: React.MouseEvent<HTMLElement>, item: TMovie) {
         setHoveredTitle(item.slug)
     }
 
