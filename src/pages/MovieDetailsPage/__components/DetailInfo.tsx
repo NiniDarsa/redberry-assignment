@@ -1,4 +1,3 @@
-import useAuthContext from "../../../hooks/useAuthContext"
 import type { TMovieDetails } from "../../../types/movies"
 
 
@@ -6,8 +5,7 @@ type TDetailInfo={
     movieDetails:TMovieDetails|undefined
 }
 const DetailInfo=({movieDetails}:TDetailInfo)=>{
-    const {user}=useAuthContext()
-    console.error(user,movieDetails?.ageRating)
+    // const {user}=useAuthContext()
     return(<>
        <div className="flex-1 flex flex-col gap-4 pt-10">
                     <h2 className="font-extrabold">Details</h2>

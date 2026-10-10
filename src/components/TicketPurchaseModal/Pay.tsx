@@ -9,7 +9,7 @@ import { GetSeatMap, HoldSeats } from "../../functions/function"
 import type { TTicketType } from "./TicketPurchaseModal"
 import MyHoldingTickets from "./MyHoldingTickets"
 import TicketSummary from "./TicketSummary"
-import useTicketPurchaseContext from "../../hooks/useTicketPurchaseContext"
+import type { THold } from "../../types/holdSeats"
 
 
 
@@ -18,11 +18,15 @@ type TSelectedTickets = {
     MovieAge: number | undefined
     handleCurrentLocation: (name: "seats" | "checkout") => void
     name: string | undefined
+
+    currentLocation: "seats" | "checkout"
+    HoldSeatsdata: THold | undefined
+    setHoldSeatsData: React.Dispatch<React.SetStateAction<THold | undefined>>
+    loading: boolean
 }
 
-const Pay = ({ clickedSession, MovieAge,  handleCurrentLocation, name}: TSelectedTickets) => {
+const Pay = ({ clickedSession, MovieAge,  handleCurrentLocation, name,currentLocation,HoldSeatsdata, setHoldSeatsData, loading}: TSelectedTickets) => {
     const { selectedSeats, setSelectedSeats, setHoldError, seatMap, setSeatMap, setExpiresAt } = useTicketContext()
-    const {currentLocation,setHoldSeatsData,loading}=useTicketPurchaseContext()
     const [isHolding, setIsHolding] = useState(false)
     const { setIsAuthModalOpen } = useAppContext()
     const { user } = useAuthContext()
@@ -38,7 +42,6 @@ const Pay = ({ clickedSession, MovieAge,  handleCurrentLocation, name}: TSelecte
         if (user?.data.age && user.data.age < (MovieAge ?? 0)) {
             return
         }
-
         setIsHolding(true)
         setHoldError("")
 
@@ -136,7 +139,7 @@ const Pay = ({ clickedSession, MovieAge,  handleCurrentLocation, name}: TSelecte
 
         <div className="flex flex-col flex-1 min-h-0">
             {currentLocation === "seats" && <MyHoldingTickets getTicketPrice={getTicketPrice} />}
-            {currentLocation === "checkout" && <TicketSummary clickedSession={clickedSession} name={name} />}
+            {currentLocation === "checkout" && <TicketSummary HoldSeatsdata={HoldSeatsdata} clickedSession={clickedSession} name={name} />}
         </div>
 
         <div className="flex flex-col gap-2">

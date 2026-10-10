@@ -10,7 +10,6 @@ import MovieDetailSessions from "./__components/MovieDetailSessions";
 import TicketContextProvider from "../../context/TicketContextProvider";
 import type { TSession } from "../../types/sessionDetail";
 import TicketPurchaseModal from "../../components/TicketPurchaseModal/TicketPurchaseModal";
-import { TicketPurchaseContextProvider } from "../../context/TicketPurchaseContextProvider";
 
 
 const MovieDetailsPage = () => {
@@ -58,14 +57,12 @@ const MovieDetailsPage = () => {
                 movieSessions={movieSessions} setClickedSession={setClickedSession}
             />
 
-         <TicketPurchaseContextProvider>
             <TicketContextProvider>
                 <TicketPurchaseModal
                     MovieAge={movieDetails?.ageRating.minAge}
                     name={movieDetails?.title}
                     isModalOpen={isOpen} ref={ref} clickedSession={clickedSession} />
             </TicketContextProvider>
-        </TicketPurchaseContextProvider>
       
         </div>)
 }

@@ -12,7 +12,6 @@ const ProfileModal = () => {
     const { ProfileModalOpen, isProfileModalOpen,setIsAuthModalOpen, setIsProfileModalOpen} = useAppContext()
   
     const { user,setUser} = useAuthContext()
-    console.error(user?.data.profileComplete)
 
     const element = useRef(null)
 

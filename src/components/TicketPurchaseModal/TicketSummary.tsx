@@ -1,15 +1,14 @@
-import useTicketPurchaseContext from "../../hooks/useTicketPurchaseContext"
+import type { THold } from "../../types/holdSeats"
 import type { TSession } from "../../types/sessionDetail"
 
 
 type TTicketSummary = {
     clickedSession: TSession | undefined
     name:string|undefined
+    HoldSeatsdata: THold | undefined
     
 }
-const TicketSummary = ({clickedSession,name }: TTicketSummary) => {
-    const {holdSeatsData : HoldSeatsdata}=useTicketPurchaseContext()
-     
+const TicketSummary = ({ HoldSeatsdata, clickedSession,name }: TTicketSummary) => {     
     const ticketCounts = HoldSeatsdata?.seats.reduce(
         (counts, seat) => {
             const type = seat.ticketType.name
