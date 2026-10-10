@@ -1,17 +1,17 @@
 import Footer from "./components/Footer"
-import HomePage from "./components/HomePage";
+import HomePage from "./pages/HomePage/HomePage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import SessionsPage from "./components/SessionsPage";
-import Navigation from "./components/Navigation";
 import SessionsContextProvider from "./context/SessionsContextProvider";
-import MovieDetailsPage from "./components/MovieDetailsPage";
-import Modal from "./components/Modal";
-import ProfileModal from "./components/ProfileModal";
+import Modal from "./components/AuthModal/Modal";
+import ProfileModal from "./components/ProfileModal/ProfileModal";
 import AppContextProvider from "./context/AppContextProvider";
 import AuthContextProvider from "./context/AuthContextProvider";
-import ProfilePage from "./components/ProfilePage";
-import MyTickets from "./components/MyTickets";
-import PersonalInformation from "./components/PersonalInformation";
+import SessionsPage from "./pages/SessionsPage/SessionsPage";
+import MovieDetailsPage from "./pages/MovieDetailsPage/MovieDetailsPage";
+import ProfilePage from "./pages/ProfilePage/ProfilePage";
+import PersonalInformation from "./pages/ProfilePage/__components/PersonalInformation";
+import MyTickets from "./pages/ProfilePage/__components/MyTickets";
+import Navigation from "./components/Navigation/Navigation";
 
 
 
