@@ -3,6 +3,7 @@ import { useFilterOptions } from "../hooks/useFilterOptions"
 import type { TVenue } from "../types/filters"
 import useAuthContext from "../hooks/useAuthContext"
 import { FieldCheck } from "../functions/function"
+import { useLocation, useNavigate } from "react-router-dom"
 
 const PersonalInformation = () => {
     const { user, fetchUser } = useAuthContext()
@@ -95,6 +96,19 @@ const PersonalInformation = () => {
             await fetchUser()
             setHasChanges(false)
 
+            const returnTo = location.state?.returnTo
+
+            if (returnTo) {
+                navigate(returnTo, {
+                    replace: true,
+                    state: {
+                        currentLocation: location.state?.currentLocation,
+                        openModal: location.state?.openModal,
+                        session: location.state?.session, //  Pass the session back
+                    },
+                })
+            }
+
         } finally {
             setIsLoading(false)
 
@@ -102,6 +116,8 @@ const PersonalInformation = () => {
     }
 
 
+    const location = useLocation()
+    const navigate = useNavigate()
 
 
 

@@ -1,8 +1,8 @@
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { useFilterOptions } from "../hooks/useFilterOptions"
 import type { TTicketType } from "./TicketPurchaseModal"
 import type { TSession } from "../types/sessionDetail"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { GetSeatMap, HoldSeats } from "../functions/function"
 import useTicketContext from "../hooks/useTicketContext"
 import useAppContext from "../hooks/useAppContext"
@@ -17,14 +17,14 @@ type TSelectedTickets = {
     MovieAge: number | undefined
     currentLocation: "seats" | "checkout"
     handleCurrentLocation: (name: "seats" | "checkout") => void
-    name:string|undefined
+    name: string | undefined
     HoldSeatsdata: THold | undefined
     setHoldSeatsData: React.Dispatch<React.SetStateAction<THold | undefined>>
-    loading:boolean
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+    loading: boolean
+
 }
 
-const Pay = ({ clickedSession, MovieAge, currentLocation, handleCurrentLocation,name, HoldSeatsdata, setHoldSeatsData,loading,setLoading }: TSelectedTickets) => {
+const Pay = ({ clickedSession, MovieAge, currentLocation, handleCurrentLocation, name, HoldSeatsdata, setHoldSeatsData, loading }: TSelectedTickets) => {
     const { selectedSeats, setSelectedSeats, setHoldError, seatMap, setSeatMap, setExpiresAt } = useTicketContext()
 
     const [isHolding, setIsHolding] = useState(false)
@@ -51,7 +51,7 @@ const Pay = ({ clickedSession, MovieAge, currentLocation, handleCurrentLocation,
                 clickedSession.id,
                 selectedSeats
             )
-           
+
             setHoldSeatsData(result.data)
             setExpiresAt(result.data.expiresAt)
             localStorage.setItem("activeHoldId", result.data.holdId)
@@ -91,10 +91,15 @@ const Pay = ({ clickedSession, MovieAge, currentLocation, handleCurrentLocation,
             if (error.status === 422) {
                 setHoldError(error.message)
 
-                if (
-                    error.message?.toLowerCase().includes("profile")
-                ) {
-                    navigate("/profile")
+                if (error.message?.toLowerCase().includes("profile")) {
+                    navigate("/profile", {
+                        state: {
+                            returnTo: location.pathname + location.search,
+                            currentLocation: "checkout",
+                            openModal: true,
+                            session: clickedSession,
+                        },
+                    })
                 }
 
                 return
@@ -135,7 +140,7 @@ const Pay = ({ clickedSession, MovieAge, currentLocation, handleCurrentLocation,
 
         <div className="flex flex-col flex-1 min-h-0">
             {currentLocation === "seats" && <MyHoldingTickets getTicketPrice={getTicketPrice} />}
-            {currentLocation==="checkout"&&<TicketSummary HoldSeatsdata={HoldSeatsdata} clickedSession={clickedSession} name={name}/>}
+            {currentLocation === "checkout" && <TicketSummary HoldSeatsdata={HoldSeatsdata} clickedSession={clickedSession} name={name} />}
         </div>
 
         <div className="flex flex-col gap-2">
@@ -149,14 +154,14 @@ const Pay = ({ clickedSession, MovieAge, currentLocation, handleCurrentLocation,
                 disabled={isHolding || selectedSeats.length === 0}
                 onClick={handleHoldSeats}>
                 {isHolding ? "Holding..." : "Next: Checkout"}</button>}
-            
-            {currentLocation==="checkout"&&    
-                 <button 
-                form="checkout-form"
-                type="submit"
-                className="text-center p-3 rounded-3xl bg-[#2A2C3D] disabled:opacity-50">
-                   {loading ? "Processing payment..." : "Pay: Complete order"}
-                 </button>
+
+            {currentLocation === "checkout" &&
+                <button
+                    form="checkout-form"
+                    type="submit"
+                    className="text-center p-3 rounded-3xl bg-[#2A2C3D] disabled:opacity-50">
+                    {loading ? "Processing payment..." : "Pay: Complete order"}
+                </button>
 
             }
         </div>

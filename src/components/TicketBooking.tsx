@@ -137,7 +137,7 @@ const TicketBooking = ({ clickedSession, name, MovieAge, isModalOpen, isConfirme
 
             <Pay clickedSession={clickedSession} MovieAge={MovieAge} currentLocation={currentLocation}
                 handleCurrentLocation={handleCurrentLocation} name={name} HoldSeatsdata={HoldSeatsdata} setHoldSeatsData={setHoldSeatsData}
-                setLoading={setLoading} loading={loading}
+                loading={loading}
             />
 
         </div>

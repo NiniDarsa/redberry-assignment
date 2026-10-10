@@ -21,7 +21,7 @@ type TTicketPurchaseModal = {
     MovieAge: number | undefined
 }
 
-const TicketPurchaseModal = ({ isModalOpen, ref: modalRef, clickedSession, name, MovieAge }: TTicketPurchaseModal) => {
+const TicketPurchaseModal = ({ isModalOpen, ref: modalRef, clickedSession, name, MovieAge}: TTicketPurchaseModal) => {
     const [confirmed, setConfirmed] = useState(false) 
     const [order,setOrder]=useState<TOrder|undefined>()
     
@@ -73,7 +73,7 @@ const TicketPurchaseModal = ({ isModalOpen, ref: modalRef, clickedSession, name,
             {isModalOpen &&
                 <div className="w-full h-full fixed inset-0 z-50 bg-[#1E2031]/50 flex items-center justify-center">
                     <div ref={modalRef} className="rounded-2xl w-285 h-170 text-white bg-[#070C1c] p-10 flex flex-col " >
-                        {!confirmed ? <TicketBooking clickedSession={clickedSession} name={name} MovieAge={MovieAge} isModalOpen={isModalOpen} isConfirmed={() => setConfirmed(true)} 
+                        {!confirmed ? <TicketBooking  clickedSession={clickedSession} name={name} MovieAge={MovieAge} isModalOpen={isModalOpen} isConfirmed={() => setConfirmed(true)} 
                           setOrder={setOrder}/>
                         : <Confirmed  order={order}/>
                         }

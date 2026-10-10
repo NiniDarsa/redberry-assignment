@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useMovieDetails } from "../hooks/useMovieDetails";
 import MovieDetailHeader from "./MovieDetailHeader";
 import MovieDetailSessions from "./MovieDetailSessions";
@@ -19,13 +19,22 @@ const MovieDetailsPage = () => {
     const { searchPar } = useSessionsContext()
     const movieSessions = useMovieSessions(name || "", searchPar)
     const location = useLocation()
+
+
     const [clickedSession, setClickedSession] = useState<TSession | undefined>(location.state?.session)
 
     useEffect(() => {
+        if (location.state?.session) {
+            setClickedSession(location.state.session)
+        }
+
         if (location.state?.openModal) {
             setIsOpen(true)
         }
-    }, [])
+    }, [location.state, setIsOpen])
+
+
+
 
     useEffect(() => {
         if (!movieDetails || !name) return
