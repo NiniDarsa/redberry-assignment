@@ -1,4 +1,4 @@
-import { useCallback, useEffect} from "react"
+import { useCallback, useEffect, useState} from "react"
 import type { TSession } from "../../types/sessionDetail"
 import type { THold } from "../../types/holdSeats"
 import useTicketContext from "../../hooks/useTicketContext"
@@ -8,7 +8,7 @@ import TicketButtonsContainer from "./TicketButtonsContainer"
 import SeatsMap from "./SeatsMap"
 import Checkout from "./Checkout"
 import Pay from "./Pay"
-import useTicketPurchaseContext from "../../hooks/useTicketPurchaseContext"
+import type { TOrder } from "../../types/completeOrder"
 
 
 type TTicketBooking = {
@@ -16,12 +16,18 @@ type TTicketBooking = {
     clickedSession: TSession | undefined
     name: string | undefined
     MovieAge: number | undefined
+
+     isConfirmed: () => void
+    setOrder: React.Dispatch<React.SetStateAction<TOrder | undefined>>
    
 }
 
-const TicketBooking = ({ clickedSession, name, MovieAge, isModalOpen,  }: TTicketBooking) => {
+const TicketBooking = ({ clickedSession, name, MovieAge, isModalOpen, isConfirmed, setOrder }: TTicketBooking) => {
     const { setSelectedSeats, setExpiresAt, setHoldError, setSeatMap } = useTicketContext()
-    const {setHoldSeatsData,setCurrentLocation,currentLocation,}=useTicketPurchaseContext()
+    // const {setHoldSeatsData,setCurrentLocation,currentLocation,}=useTicketPurchaseContext()
+    const [currentLocation, setCurrentLocation] = useState<"seats" | "checkout">("seats")
+    const [HoldSeatsdata, setHoldSeatsData] = useState<THold>()
+    const [loading, setLoading] = useState(false)
 
     const handleHoldExpired=useCallback(()=>{
         setHoldSeatsData(undefined)
@@ -127,13 +133,15 @@ const TicketBooking = ({ clickedSession, name, MovieAge, isModalOpen,  }: TTicke
                 <div className="flex flex-col gap-2">
                     {currentLocation === "seats" ?
                         <SeatsMap isModalOpen={isModalOpen} clickedSession={clickedSession} />
-                        : <Checkout/>
+                        : <Checkout setLoading={setLoading} HoldSeatsData={HoldSeatsdata} isConfirmed={isConfirmed} setOrder={setOrder}/>
                     }
                 </div>
 
             </div>
 
-            <Pay clickedSession={clickedSession} MovieAge={MovieAge} handleCurrentLocation={handleCurrentLocation} name={name}  />
+            <Pay clickedSession={clickedSession} MovieAge={MovieAge} currentLocation={currentLocation}
+                handleCurrentLocation={handleCurrentLocation} name={name} HoldSeatsdata={HoldSeatsdata} setHoldSeatsData={setHoldSeatsData}
+                loading={loading}  />
 
         </div>
 

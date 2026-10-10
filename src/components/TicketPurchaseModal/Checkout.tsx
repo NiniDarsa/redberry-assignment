@@ -2,11 +2,11 @@ import { useState } from "react"
 import useTicketContext from "../../hooks/useTicketContext"
 import useAuthContext from "../../hooks/useAuthContext"
 import { CompleteOrder } from "../../functions/function"
-import useTicketPurchaseContext from "../../hooks/useTicketPurchaseContext"
+import type { THold } from "../../types/holdSeats"
+import type { TOrder } from "../../types/completeOrder"
 
 
-const Checkout = ( ) => {
-    const {holdSeatsData:HoldSeatsData,isConfirmed,setOrder,setLoading}=useTicketPurchaseContext()
+const Checkout = ( { HoldSeatsData, isConfirmed, setOrder,setLoading }: { HoldSeatsData: THold | undefined, isConfirmed: () => void, setOrder: React.Dispatch<React.SetStateAction<TOrder | undefined>>,setLoading:React.Dispatch<React.SetStateAction<boolean>> }) => {
     const { holdError } = useTicketContext()
     const { user } = useAuthContext()
 
@@ -39,13 +39,10 @@ const Checkout = ( ) => {
 
     // Handle Purchase (step2 pay)
     const handlePurchase = async (e: React.FormEvent) => {
-
         e.preventDefault()
         setMessage("")
         setErrors({ cardNumber: "", expiry: "", cvv: "" })
         setLoading(true)
-
-
         try {
             const result = await CompleteOrder({
                 holdId: HoldSeatsData?.holdId,
@@ -56,9 +53,6 @@ const Checkout = ( ) => {
                 expiry,
                 cvv,
             })
-
-
-
             if (result.status === 201) {
                 localStorage.removeItem("activeHoldId")
                 console.log("Order completed:", result.data.data)
@@ -67,7 +61,6 @@ const Checkout = ( ) => {
                 isConfirmed()
                 return
             }
-
             if (result.status === 422) {
                 if (result.data.errors) {
                     setErrors({

@@ -1,12 +1,14 @@
 import { useNavigate } from "react-router-dom"
-import useTicketPurchaseContext from "../../hooks/useTicketPurchaseContext"
+import type { TOrder } from "../../types/completeOrder"
 
 
 
+type TConfirmed = {
+    order: TOrder | undefined
+}
 
 
-const Confirmed = () => {
-    const {order}=useTicketPurchaseContext()
+const Confirmed = ({ order }: TConfirmed) => {
     const navigate = useNavigate()
     return (<div className="w-full h-full flex flex-col items-center gap-10">
         <div className="flex flex-col gap-2 items-center">

@@ -45,7 +45,6 @@ const SessionsContextProvider = ({ children }: SessionsContextProviderProp) => {
 
     const [searchParams, setSearchParams] = useSearchParams()
 
-    //Now I read values from URL (instead of using states)
     const venue = searchParams.getAll("venues[]")
     const format = searchParams.getAll("formats[]")
     const language = searchParams.getAll("languages[]")
@@ -54,8 +53,6 @@ const SessionsContextProvider = ({ children }: SessionsContextProviderProp) => {
     const sort = searchParams.get("sort") || "time_asc"
     const page = Number(searchParams.get("page")) || 1
     const search = searchParams.get("search") || ""
-
-
 
     // UPDATE one parameter
     const updateParams = (

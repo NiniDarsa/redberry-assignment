@@ -100,6 +100,7 @@ const Search = () => {
                         <div className="flex flex-col gap-4 justify-center">
                             {searchResult.map((item) => {
                                 return (<div
+                                   key={item.id}
                                     onClick={() => { navigate(`/movie/${item.slug}`), setMovieSearch("") }}
                                     className="flex justify-between items-center gap-4 p-2 cursor-pointer hover:bg-[#2A2C3D]" >
                                     <div className="flex gap-2 items-center ">
