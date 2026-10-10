@@ -1,4 +1,4 @@
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useMovieDetails } from "../../hooks/useMovieDetails";
 import useOnClickOutside from "../../hooks/useClickOutside";
 import useSessionsContext from "../../hooks/useSessionsContext";

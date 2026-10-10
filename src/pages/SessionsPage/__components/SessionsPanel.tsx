@@ -9,7 +9,7 @@ import Pagination from "./Pagination"
 
 
 const SessionsPanel = () => {
-    const { searchPar: searchParams, setSort, setPage, page } = useSessionsContext()
+    const { searchPar: searchParams, setSort } = useSessionsContext()
 
     const url = `https://api.kinoxii.redberryinternship.ge/api/sessions?${searchParams}`
 
