@@ -1,10 +1,50 @@
 import Heading from "./Heading"
 import { useComingSoonMoviesInfo } from "../hooks/useComingSoonMoviesInfo"
+import { useEffect, useState } from "react"
+import { NotifyMovie } from "../functions/function"
+import useAuthContext from "../hooks/useAuthContext"
 
 const ComingSoon = () => {
     const [comingSoonMovies] = useComingSoonMoviesInfo()
 
     console.warn(comingSoonMovies)
+
+    const { user } = useAuthContext()
+
+    const [error, setError] = useState("")
+    const [notifiedMovies, setNotifiedMovies] = useState<string[]>([])
+    const [success, setSuccess] = useState("")
+
+    useEffect(() => {
+        if (!error) return
+
+        const timer = setTimeout(() => {
+            setError("")
+        }, 3000)
+
+        return () => clearTimeout(timer)
+    }, [error])
+
+    const handleNotify = async (movieId: string) => {
+        setError("")
+
+        if (!user) {
+            setError("Please sign in to receive movie notifications.")
+            return
+        }
+
+        try {
+            await NotifyMovie(movieId)
+
+            setSuccess("You'll be notified when this movie is available!")
+
+            setNotifiedMovies((prev) =>
+                prev.includes(movieId) ? prev : [...prev, movieId]
+            )
+        } catch {
+            setError("Could not subscribe. Please try again.")
+        }
+    }
 
 
 
@@ -24,10 +64,36 @@ const ComingSoon = () => {
                                 <h3 className=" font-extrabold">{item.title}</h3>
                                 <p className=" text-[#A9A9A9]"> {item.genres[0]?.name}. {item.runtimeMinutes} min</p>
                                 <p className="text-[#EC3013]  bg-[#EC30131A] rounded-full px-3 py-1.5 w-fit"> {item.ageRating.code}</p>
-                                <button className=" cursor-pointer font-semibold rounded-2xl border border-[#A9A9A9] px-3 py-1 flex gap-0.5 items-center "><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M5.99957 12.2505C5.99957 12.7809 6.21028 13.2896 6.58536 13.6647C6.96043 14.0398 7.46914 14.2505 7.99957 14.2505C8.53 14.2505 9.03871 14.0398 9.41378 13.6647C9.78886 13.2896 9.99957 12.7809 9.99957 12.2505M11.4996 1.75049C12.4651 2.36656 13.2482 3.22974 13.7677 4.25049M2.23145 4.25049C2.75093 3.22974 3.53404 2.36656 4.49957 1.75049M3.49957 7.25049C3.49957 6.05701 3.97368 4.91242 4.81759 4.06851C5.6615 3.22459 6.8061 2.75049 7.99957 2.75049C9.19304 2.75049 10.3376 3.22459 11.1816 4.06851C12.0255 4.91242 12.4996 6.05701 12.4996 7.25049C12.4996 9.48924 13.0183 10.788 13.4308 11.5005C13.4746 11.5764 13.4977 11.6624 13.4978 11.75C13.4979 11.8377 13.4749 11.9238 13.4313 11.9997C13.3876 12.0757 13.3247 12.1388 13.249 12.1828C13.1732 12.2269 13.0872 12.2502 12.9996 12.2505H2.99957C2.91206 12.25 2.82622 12.2265 2.75062 12.1824C2.67503 12.1383 2.61234 12.0751 2.56881 11.9992C2.52528 11.9233 2.50245 11.8373 2.50258 11.7497C2.50271 11.6622 2.52581 11.5763 2.56957 11.5005C2.98145 10.788 3.49957 9.48861 3.49957 7.25049Z" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                                    Notify Me</button>
+                                <button
+                                    onClick={() => handleNotify(item.slug)}
+                                    className={`cursor-pointer font-semibold rounded-2xl border px-3 py-1 flex gap-1 items-center transition-colors duration-200 ${notifiedMovies.includes(item.slug)
+                                            ? "border-green-500 bg-green-500/15 text-green-400"
+                                            : "border-[#A9A9A9] text-white hover:bg-white/10"
+                                        }`}
+                                >
+                                    {notifiedMovies.includes(item.slug) ? (
+                                        <>
+                                            <svg
+                                                width="16"
+                                                height="16"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            >
+                                                <path d="m5 12 4 4L19 6" />
+                                            </svg>
+                                            Notified
+                                        </>
+                                    ) : (
+                                        <>
+                                            {/* Keep your existing bell SVG here */}
+                                            Notify Me
+                                        </>
+                                    )}
+                                </button>
                             </div>
                         </article>)
                     })
@@ -37,7 +103,46 @@ const ComingSoon = () => {
 
             <div className="pointer-events-none absolute top-0 right-0 h-full w-[20%] bg-linear-to-r from-transparent to-[#070c1c]" />
         </div>
+        {error && (
+            <div
+                role="alert"
+                className="fixed top-6 right-6 z-50 flex items-start gap-3 w-[350px] rounded-xl border border-[#454052] bg-[#1E2031] p-4 shadow-2xl"
+            >
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#EC3013]/10">
+                    <svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#EC3013"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    >
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                </div>
 
+                <div className="flex-1">
+                    <p className="text-sm font-semibold text-white">
+                        Something went wrong
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-[#A9A9A9]">
+                        {error}
+                    </p>
+                </div>
+
+                <button
+                    onClick={() => setError("")}
+                    aria-label="Dismiss notification"
+                    className="text-[#A9A9A9] hover:text-white cursor-pointer"
+                >
+                    ✕
+                </button>
+            </div>
+        )}
     </section>)
 }
 export default ComingSoon

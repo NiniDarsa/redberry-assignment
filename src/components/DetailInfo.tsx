@@ -39,7 +39,7 @@ const DetailInfo=({movieDetails}:TDetailInfo)=>{
 
                     <div>
                         <h3 className="text-[#A9A9A9]">FROM</h3>
-                        <p>{movieDetails?.fromPrice} ლ</p>
+                        <p> ₾ {movieDetails?.fromPrice} </p>
                     </div>
                     <div className="bg-[#E27E041A] p-4 rounded-2xl w-[90%]">
                         <h3 className="text-[#E27E04]">RATING NOTE</h3>

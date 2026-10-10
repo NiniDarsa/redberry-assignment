@@ -229,14 +229,18 @@ const FiltersPanel = () => {
             </div>
 
             <div className="flex flex-col justify-between items-center gap-2">
-                <div className="text-[#A9A9A9] text-center pt-10 font-normal ">
+                
+                 <button
+                    onClick={() => handleClick()}
+                    className="border border-[#A9A9A9] px-25 py-1 mt-5 rounded-3xl font-semibold cursor-pointer ">Clear all
+                </button>
+
+                <div className="text-[#A9A9A9] text-center pt-5 font-normal ">
                     <span>
                         {filterCounter()}
                     </span> filters active
                 </div>
-                <button
-                    onClick={() => handleClick()}
-                    className="bg-[#2A2D3C] p-2 rounded-sm font-semibold cursor-pointer ">Clear all</button>
+               
             </div>
         </div>
 

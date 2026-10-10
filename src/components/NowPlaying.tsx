@@ -23,11 +23,11 @@ const NowPlayingSection = () => {
 
 
     //fetched Detailed information about each movie
-    const [details] = useDetailedMovieInfo(hoveredTitle)
+    const details = useDetailedMovieInfo(hoveredTitle)
 
     const navigate = useNavigate()
 
-    return (<section className="bg-[#070c1c] w-full text-white  pl-15  pt-4 pb-10">
+    return (<section className="bg-[#070c1c] w-full text-white  pl-15  pt-7 pb-10">
         <Heading title={"NOW PLAYING"} />
 
         <div className="relative">
@@ -49,10 +49,10 @@ const NowPlayingSection = () => {
 
                         </div>
                         <div className="mt-auto flex items-center justify-between gap-2 ">
-                            <p className="font-extrabold">from {item.fromPrice}ლ</p>
+                            <p className="font-extrabold">from ₾ {item.fromPrice}</p>
                             <button
-                                onClick={() => navigate("/sessions")}
-                                className="font-extrabold bg-[#EC3013] px-4 py-1.5 rounded-full cursor-pointer">buy ticket</button>
+                            onClick={() => {navigate(`/movie/${item.slug}`)}}
+                           className="font-extrabold bg-[#EC3013] px-4 py-1.5 rounded-full cursor-pointer">buy ticket</button>
                         </div>
                     </article>)
                 })}

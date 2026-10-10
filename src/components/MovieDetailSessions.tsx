@@ -1,27 +1,50 @@
+import useAppContext from "../hooks/useAppContext";
 import useAuthContext from "../hooks/useAuthContext";
-import { useMovieSessions } from "../hooks/useMovieSessions";
 import useSessionsContext from "../hooks/useSessionsContext";
 import type { TMovieDetails } from "../types/movies";
+import type { TSession, TVenueSessionsResponse } from "../types/sessionDetail";
 import DatePicker from "./DatePicker";
 import DetailInfo from "./DetailInfo";
 
 type TMovieDetailSessions = {
-    name: string | undefined
     movieDetails: TMovieDetails | undefined
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+    movieSessions: TVenueSessionsResponse| undefined
+   setClickedSession: React.Dispatch<React.SetStateAction<TSession|undefined>>
 }
 
-const MovieDetailSessions = ({ name, movieDetails }: TMovieDetailSessions) => {
-    const { datePeriod, setDatePeriod, searchPar } = useSessionsContext()
+const MovieDetailSessions = ({  movieDetails,  setIsOpen, movieSessions, setClickedSession }: TMovieDetailSessions) => {
+    const { datePeriod, setDatePeriod } = useSessionsContext()
 
-    const [movieSessions, setMovieSessions] = useMovieSessions(name || "", searchPar)
 
     const { user } = useAuthContext()
-
-    console.warn("ESA", movieSessions)
+    const { setIsAuthModalOpen } = useAppContext()
 
     function handleDateChange(date: string) {
         setDatePeriod(date, false)
     }
+
+
+    const handleSessionClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>,session:TSession) => {
+        e.stopPropagation()
+        const isAgeRestricted =
+        user?.data.age !== undefined &&
+        user?.data.age !== null &&
+        movieDetails?.ageRating.minAge !== undefined &&
+        user.data.age < movieDetails.ageRating.minAge
+
+     if (isAgeRestricted) {
+         return
+    }
+
+        setClickedSession(session)
+        if (user) {
+            setIsOpen(true)
+        } else {
+            setIsAuthModalOpen("Log In")
+        }
+    }
+
 
     return (
         <>
@@ -42,7 +65,8 @@ const MovieDetailSessions = ({ name, movieDetails }: TMovieDetailSessions) => {
                         </div>
                     </>
 
-                    <div className="text-white pt-10">
+                    <div
+                        className="text-white pt-10">
 
                         {movieSessions?.map((item) => {
 
@@ -80,11 +104,11 @@ const MovieDetailSessions = ({ name, movieDetails }: TMovieDetailSessions) => {
                                                     <div
                                                         key={hall.id}
                                                         className={`p-3 rounded-2xl shrink-0 w-fit ${user?.data.age !== undefined &&
-                                                                user?.data.age !== null &&
-                                                                movieDetails?.ageRating.minAge !== undefined &&
-                                                                user.data.age < movieDetails.ageRating.minAge
-                                                                ? "bg-gray-500 opacity-50 cursor-not-allowed"
-                                                                : "bg-[#1E2031]"
+                                                            user?.data.age !== null &&
+                                                            movieDetails?.ageRating.minAge !== undefined &&
+                                                            user.data.age < movieDetails.ageRating.minAge
+                                                            ? "bg-gray-500 opacity-50 cursor-not-allowed"
+                                                            : "bg-[#1E2031]"
                                                             }`}
                                                     >
                                                         <h3 className="pb-2">
@@ -96,8 +120,11 @@ const MovieDetailSessions = ({ name, movieDetails }: TMovieDetailSessions) => {
                                                             {hallSessions.map((session) => (
 
                                                                 <div
+
+                                                                   onClick={(e) => handleSessionClick(e,session)}
+                    
                                                                     key={session.id}
-                                                                    className="flex shrink-0"
+                                                                    className="flex shrink-0 cursor-pointer"
                                                                 >
 
                                                                     <div className="flex gap-5">
@@ -149,7 +176,7 @@ const MovieDetailSessions = ({ name, movieDetails }: TMovieDetailSessions) => {
                                                                             >
 
                                                                                 <p className="text-[#EC3013] font-extrabold">
-                                                                                    {session.price}ლ
+                                                                                   ₾ {session.price}
                                                                                 </p>
 
                                                                                 <p className="text-[#A9A9A9] text-[12px]">
