@@ -8,7 +8,7 @@ import TicketButtonsContainer from "./TicketButtonsContainer"
 import SeatsMap from "./SeatsMap"
 import Checkout from "./Checkout"
 import Pay from "./Pay"
-import useTicketPurchaseContext from "../../context/TicketPurchaseContextProvider"
+import useTicketPurchaseContext from "../../hooks/useTicketPurchaseContext"
 
 
 type TTicketBooking = {

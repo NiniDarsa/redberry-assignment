@@ -2,7 +2,7 @@ import { useState } from "react"
 import useTicketContext from "../../hooks/useTicketContext"
 import useAuthContext from "../../hooks/useAuthContext"
 import { CompleteOrder } from "../../functions/function"
-import useTicketPurchaseContext from "../../context/TicketPurchaseContextProvider"
+import useTicketPurchaseContext from "../../hooks/useTicketPurchaseContext"
 
 
 const Checkout = ( ) => {

@@ -9,7 +9,7 @@ import { GetSeatMap, HoldSeats } from "../../functions/function"
 import type { TTicketType } from "./TicketPurchaseModal"
 import MyHoldingTickets from "./MyHoldingTickets"
 import TicketSummary from "./TicketSummary"
-import useTicketPurchaseContext from "../../context/TicketPurchaseContextProvider"
+import useTicketPurchaseContext from "../../hooks/useTicketPurchaseContext"
 
 
 

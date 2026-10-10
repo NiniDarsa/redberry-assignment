@@ -4,6 +4,7 @@ import useAuthContext from "../../../hooks/useAuthContext"
 import { useComingSoonMoviesInfo } from "../../../hooks/useComingSoonMoviesInfo"
 import { NotifyMovie } from "../../../functions/function"
 import Heading from "./Heading"
+import useAppContext from "../../../hooks/useAppContext"
 
 const ComingSoon = () => {
     const [comingSoonMovies] = useComingSoonMoviesInfo()
@@ -16,6 +17,8 @@ const ComingSoon = () => {
     const [notifiedMovies, setNotifiedMovies] = useState<string[]>([])
     const [success, setSuccess] = useState("")
 
+    const {setIsAuthModalOpen } = useAppContext()
+
     useEffect(() => {
         if (!error) return
 
@@ -26,11 +29,29 @@ const ComingSoon = () => {
         return () => clearTimeout(timer)
     }, [error])
 
+
+    useEffect(() => {
+        if (!success) return
+
+        const timer = setTimeout(() => {
+            setSuccess("")
+        }, 3000)
+
+        return () => clearTimeout(timer)
+    }, [success])
+   
+    useEffect(() => {
+    if (!user) {
+        setNotifiedMovies([])
+        setSuccess("")
+    }
+}, [user])
+
     const handleNotify = async (movieId: string) => {
         setError("")
 
         if (!user) {
-            setError("Please sign in to receive movie notifications.")
+            setIsAuthModalOpen("Log In")
             return
         }
 
@@ -67,7 +88,7 @@ const ComingSoon = () => {
                                         day: "numeric",
                                         month: "long",
                                     })}
-                                </p>                                <h3 className=" font-extrabold">{item.title}</h3>
+                                </p>   <h3 className=" font-extrabold">{item.title}</h3>
                                 <p className=" text-[#A9A9A9]"> {item.genres[0]?.name}. {item.runtimeMinutes} min</p>
                                 <p className="text-[#EC3013]  bg-[#EC30131A] rounded-full px-3 py-1.5 w-fit"> {item.ageRating.code}</p>
                                 <button
@@ -145,6 +166,47 @@ const ComingSoon = () => {
 
                 <button
                     onClick={() => setError("")}
+                    aria-label="Dismiss notification"
+                    className="text-[#A9A9A9] hover:text-white cursor-pointer"
+                >
+                    ✕
+                </button>
+            </div>
+        )}
+
+
+        {success && (
+            <div
+                role="status"
+                className="fixed top-6 right-6 z-50 flex items-start gap-3 w-[350px] rounded-xl border border-green-500/30 bg-[#1E2031] p-4 shadow-2xl"
+            >
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-500/10">
+                    <svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#4ADE80"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="m8 12 3 3 5-6" />
+                    </svg>
+                </div>
+
+                <div className="flex-1">
+                    <p className="text-sm font-semibold text-white">
+                        Success!
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-[#A9A9A9]">
+                        {success}
+                    </p>
+                </div>
+
+                <button
+                    onClick={() => setSuccess("")}
                     aria-label="Dismiss notification"
                     className="text-[#A9A9A9] hover:text-white cursor-pointer"
                 >

@@ -4,7 +4,7 @@ import useTicketContext from "../../hooks/useTicketContext"
 import { CancelHold, GetSeatMap } from "../../functions/function"
 import TicketBooking from "./TicketBooking"
 import Confirmed from "./Confirmed"
-import useTicketPurchaseContext from "../../context/TicketPurchaseContextProvider"
+import useTicketPurchaseContext from "../../hooks/useTicketPurchaseContext"
 
 
 export type TTicketType = "adult" | "student" | "child"

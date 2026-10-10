@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import useTicketPurchaseContext from "../../context/TicketPurchaseContextProvider"
+import useTicketPurchaseContext from "../../hooks/useTicketPurchaseContext"
 
 
 

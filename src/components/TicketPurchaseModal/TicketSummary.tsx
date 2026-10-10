@@ -1,4 +1,4 @@
-import useTicketPurchaseContext from "../../context/TicketPurchaseContextProvider"
+import useTicketPurchaseContext from "../../hooks/useTicketPurchaseContext"
 import type { TSession } from "../../types/sessionDetail"
 
 
