@@ -1,6 +1,5 @@
-import { useLocation, useNavigate } from "react-router-dom"
+import {  useNavigate } from "react-router-dom"
 import type { TSession } from "../../types/sessionDetail"
-import type { THold } from "../../types/holdSeats"
 import useTicketContext from "../../hooks/useTicketContext"
 import { useState } from "react"
 import useAppContext from "../../hooks/useAppContext"
@@ -10,24 +9,20 @@ import { GetSeatMap, HoldSeats } from "../../functions/function"
 import type { TTicketType } from "./TicketPurchaseModal"
 import MyHoldingTickets from "./MyHoldingTickets"
 import TicketSummary from "./TicketSummary"
+import useTicketPurchaseContext from "../../context/TicketPurchaseContextProvider"
 
 
 
 type TSelectedTickets = {
     clickedSession: TSession | undefined
     MovieAge: number | undefined
-    currentLocation: "seats" | "checkout"
     handleCurrentLocation: (name: "seats" | "checkout") => void
     name: string | undefined
-    HoldSeatsdata: THold | undefined
-    setHoldSeatsData: React.Dispatch<React.SetStateAction<THold | undefined>>
-    loading: boolean
-
 }
 
-const Pay = ({ clickedSession, MovieAge, currentLocation, handleCurrentLocation, name, HoldSeatsdata, setHoldSeatsData, loading }: TSelectedTickets) => {
+const Pay = ({ clickedSession, MovieAge,  handleCurrentLocation, name}: TSelectedTickets) => {
     const { selectedSeats, setSelectedSeats, setHoldError, seatMap, setSeatMap, setExpiresAt } = useTicketContext()
-
+    const {currentLocation,setHoldSeatsData,loading}=useTicketPurchaseContext()
     const [isHolding, setIsHolding] = useState(false)
     const { setIsAuthModalOpen } = useAppContext()
     const { user } = useAuthContext()
@@ -141,7 +136,7 @@ const Pay = ({ clickedSession, MovieAge, currentLocation, handleCurrentLocation,
 
         <div className="flex flex-col flex-1 min-h-0">
             {currentLocation === "seats" && <MyHoldingTickets getTicketPrice={getTicketPrice} />}
-            {currentLocation === "checkout" && <TicketSummary HoldSeatsdata={HoldSeatsdata} clickedSession={clickedSession} name={name} />}
+            {currentLocation === "checkout" && <TicketSummary clickedSession={clickedSession} name={name} />}
         </div>
 
         <div className="flex flex-col gap-2">

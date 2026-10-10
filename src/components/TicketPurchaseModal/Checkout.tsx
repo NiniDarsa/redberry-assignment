@@ -1,13 +1,12 @@
 import { useState } from "react"
 import useTicketContext from "../../hooks/useTicketContext"
 import useAuthContext from "../../hooks/useAuthContext"
-import type { THold } from "../../types/holdSeats"
 import { CompleteOrder } from "../../functions/function"
-import type { TOrder } from "../../types/completeOrder"
+import useTicketPurchaseContext from "../../context/TicketPurchaseContextProvider"
 
 
-const Checkout = ({ HoldSeatsData, isConfirmed, setOrder,setLoading }: { HoldSeatsData: THold | undefined, isConfirmed: () => void, setOrder: React.Dispatch<React.SetStateAction<TOrder | undefined>>,setLoading:React.Dispatch<React.SetStateAction<boolean>> }) => {
-
+const Checkout = ( ) => {
+    const {holdSeatsData:HoldSeatsData,isConfirmed,setOrder,setLoading}=useTicketPurchaseContext()
     const { holdError } = useTicketContext()
     const { user } = useAuthContext()
 
