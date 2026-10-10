@@ -50,8 +50,6 @@ export const saveRecentlyViewedMovie = (movie: TRecentlyViewedMovie) => {
 }
 
 
-
-
 export const Login = async (EmailPasswordObject: { email: string, password: string }) => {
   try {
     const response = await fetch("https://api.kinoxii.redberryinternship.ge/api/login", {
