@@ -127,7 +127,7 @@ const TicketBooking = ({ clickedSession, name, MovieAge, isModalOpen, isConfirme
         </div>
 
         <div className="flex gap-2 flex-1 min-h-0 overflow-hidden" >
-            <div className="flex-4 flex flex-col gap-5 min-h-0 overflow-scroll">
+            <div className="flex-4 flex flex-col gap-5 min-h-0 overflow-y-auto overflow-x-auto">
                 <TicketButtonsContainer currentLocation={currentLocation} />
 
                 <div className="flex flex-col gap-2">

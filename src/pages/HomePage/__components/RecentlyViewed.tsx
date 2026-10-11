@@ -19,7 +19,7 @@ const RecentlyViewed = () => {
     }, [])
     return (
         <>{RecentlyViewed.length > 0 &&
-            <div className="h-80 bg-[#070C1C] p-15 text-[white] border-b border-[#1E2031] overflow-x-auto overflow-y-hidden">
+            <div className="h-80 bg-[#070C1C] p-15 text-[white] border-b border-[#1E2031] overflow-x-auto overflow-y-hidden scrollbar-none">
                 <h1 className="font-extrabold mb-5">Recently viewed</h1>
                 <div className="relative">
                     <div className="flex gap-5">
