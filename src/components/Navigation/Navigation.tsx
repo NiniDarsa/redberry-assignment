@@ -24,7 +24,7 @@ const Navigation = () => {
             className="font-semibold text-[20px] cursor-pointer">sessions</p>
         </div>
 
-        <div className="flex flex-2 justify-between items-baseline gap-3">
+        <div className="flex flex-2 justify-between items-center gap-3">
             <Search/>
 
            {user?
