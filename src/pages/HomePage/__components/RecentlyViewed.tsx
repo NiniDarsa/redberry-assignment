@@ -1,9 +1,22 @@
 import { useNavigate } from "react-router-dom"
 import { getRecentlyViewedMovies } from "../../../functions/function"
+import { useEffect, useState } from "react"
 
 const RecentlyViewed = () => {
-    const RecentlyViewed = getRecentlyViewedMovies()
+   const [RecentlyViewed, setRecentlyViewed] = useState(getRecentlyViewedMovies)
     const navigate = useNavigate()
+
+    useEffect(() => {
+        const updateRecentlyViewed = () => {
+            setRecentlyViewed(getRecentlyViewedMovies())
+        }
+
+        window.addEventListener("recentlyViewedUpdated", updateRecentlyViewed)
+
+        return () => {
+            window.removeEventListener("recentlyViewedUpdated", updateRecentlyViewed)
+        }
+    }, [])
     return (
         <>{RecentlyViewed.length > 0 &&
             <div className="h-80 bg-[#070C1C] p-15 text-[white] border-b border-[#1E2031] overflow-x-auto overflow-y-hidden">

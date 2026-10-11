@@ -30,12 +30,16 @@ const ProfileModal = () => {
         await Logout()
 
         localStorage.removeItem("token")
+         localStorage.removeItem("recentlyViewedMovies") 
+         window.dispatchEvent(new Event("recentlyViewedUpdated"))
         setUser(null)
         ProfileModalOpen(false)
 
     } catch (err: any) {
         if (err.status === 401) {
             localStorage.removeItem("token")
+            localStorage.removeItem("recentlyViewedMovies") 
+             window.dispatchEvent(new Event("recentlyViewedUpdated"))
             setUser(null)
             ProfileModalOpen(false)
         }
