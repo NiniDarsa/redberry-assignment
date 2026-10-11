@@ -31,7 +31,7 @@ const NowPlayingSection = () => {
         <Heading title={"NOW PLAYING"} />
 
         <div className="relative">
-            <div className="flex gap-6 overflow-x-auto">
+            <div className="flex gap-6 overflow-x-auto scrollbar-none">
 
                 {nowPlayingMovies.map((item) => {
                     return (<article

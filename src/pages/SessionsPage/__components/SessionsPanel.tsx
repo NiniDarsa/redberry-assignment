@@ -34,7 +34,7 @@ const SessionsPanel = () => {
                     </div>
                 </div>
 
-                <div className="flex gap-4 overflow-x-auto min-w-0">
+                <div className="flex gap-4 overflow-x-auto min-w-0 scrollbar-none">
                     {item.sessions.map((item) => {
                         return (<div
                             //         onClick={() => {

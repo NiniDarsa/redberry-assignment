@@ -95,7 +95,7 @@ const MovieDetailSessions = ({  movieDetails,  setIsOpen, movieSessions, setClic
 
                                     <div className="relative">
 
-                                        <div className="flex gap-4 overflow-x-auto">
+                                        <div className="flex gap-4 overflow-x-auto scrollbar-none">
 
                                             {Object.values(halls).map((hallSessions) => {
 

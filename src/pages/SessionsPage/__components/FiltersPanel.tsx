@@ -160,7 +160,7 @@ const FiltersPanel = () => {
                 <div className="border-b border-[#2A2D3C] pb-5">
                     <h4 className="text-white pb-2">DATE</h4>
 
-                    <div className="flex overflow-auto gap-1">
+                    <div className="flex overflow-auto gap-1 scrollbar-none">
                        <DatePicker datePeriod={datePeriod} handleDateChange={handleDateChange}/>
                     </div>
                 </div>
