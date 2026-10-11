@@ -49,7 +49,7 @@ const TicketBooking = ({ clickedSession, name, MovieAge, isModalOpen, isConfirme
                 // Make sure this hold belongs to the session being booked
                 if (hold.sessionId !== clickedSession.id){
                     await CancelHold(holdId).catch(console.error)
-                    localStorage.removeItem("acviteHoldId")
+                    localStorage.removeItem("activeHoldId")
                     return
                 }
 
